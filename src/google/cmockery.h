@@ -33,6 +33,7 @@ int __stdcall IsDebuggerPresent();
  * #include <stdarg.h>
  * #include <stddef.h>
  * #include <setjmp.h>
+ * #include <inttypes.h>
  *
  * This allows test applications to use custom definitions of C standard
  * library functions and types.
@@ -45,22 +46,59 @@ int __stdcall IsDebuggerPresent();
 
 /* Largest integral type.  This type should be large enough to hold any
  * pointer or integer supported by the compiler. */
-#ifndef LargestIntegralType
-#define LargestIntegralType unsigned long long
-#endif // LargestIntegralType
+#ifndef _UINTMAX_T
+#define _UINTMAX_T
+typedef unsigned long long uintmax_t;
+#endif /* _UINTMAX_T */
 
-// Printf format used to display LargestIntegralType.
-#ifndef LargestIntegralTypePrintfFormat
+/* Printf formats used to display uintmax_t. */
 #ifdef _WIN32
-#define LargestIntegralTypePrintfFormat "%I64x"
-#else
-#define LargestIntegralTypePrintfFormat "%llx"
-#endif // _WIN32
-#endif // LargestIntegralTypePrintfFormat
 
-// Perform an unsigned cast to LargestIntegralType.
+#ifndef PRIdMAX
+#define PRIdMAX "I64d"
+#endif /* PRIdMAX */
+#ifndef PRIiMAX
+#define PRIiMAX "I64i"
+#endif /* PRIiMAX */
+#ifndef PRIoMAX
+#define PRIoMAX "I64o"
+#endif /* PRIoMAX */
+#ifndef PRIuMAX
+#define PRIuMAX "I64u"
+#endif /* PRIuMAX */
+#ifndef PRIxMAX
+#define PRIxMAX "I64x"
+#endif /* PRIxMAX */
+#ifndef PRIXMAX
+#define PRIXMAX "I64X"
+#endif /* PRIXMAX */
+
+#else /* _WIN32 */
+
+#ifndef PRIdMAX
+#define PRIdMAX "lld"
+#endif /* PRIdMAX */
+#ifndef PRIiMAX
+#define PRIiMAX "lli"
+#endif /* PRIiMAX */
+#ifndef PRIoMAX
+#define PRIoMAX "llo"
+#endif /* PRIoMAX */
+#ifndef PRIuMAX
+#define PRIuMAX "llu"
+#endif /* PRIuMAX */
+#ifndef PRIxMAX
+#define PRIxMAX "llx"
+#endif /* PRIxMAX */
+#ifndef PRIXMAX
+#define PRIXMAX "llX"
+#endif /* PRIXMAX */
+
+#endif /* _WIN32 */
+
+// Perform an unsigned cast to uintmax_t.
 #define cast_to_largest_integral_type(value) \
-    ((LargestIntegralType)((unsigned)(value)))
+    ((uintmax_t)(value))
 
 // Retrieves a return value for the current function.
 #define mock() _mock(__func__, __FILE__, __LINE__)
@@ -328,8 +366,8 @@ int __stdcall IsDebuggerPresent();
 typedef void (*UnitTestFunction)(void **state);
 
 // Function that determines whether a function parameter value is correct.
-typedef int (*CheckParameterValue)(const LargestIntegralType value,
-                                   const LargestIntegralType check_value_data);
+typedef int (*CheckParameterValue)(const uintmax_t value,
+                                   const uintmax_t check_value_data);
 
 // Type of the unit test function.
 typedef enum UnitTestFunctionType {
@@ -360,7 +398,7 @@ typedef struct CheckParameterEvent {
     SourceLocation location;
     const char *parameter_name;
     CheckParameterValue check_value;
-    LargestIntegralType check_value_data;
+    uintmax_t check_value_data;
 } CheckParameterEvent;
 
 // Used by expect_assert_failure() and mock_assert().
@@ -368,43 +406,43 @@ extern int global_expecting_assert;
 extern jmp_buf global_expect_assert_env;
 
 // Retrieves a value for the given function, as set by "will_return".
-LargestIntegralType _mock(const char * const function, const char* const file,
+uintmax_t _mock(const char * const function, const char* const file,
                           const int line);
 
 void _expect_check(
     const char* const function, const char* const parameter,
     const char* const file, const int line,
     const CheckParameterValue check_function,
-    const LargestIntegralType check_data, CheckParameterEvent * const event,
+    const uintmax_t check_data, CheckParameterEvent * const event,
     const int count);
 
 void _expect_in_set(
     const char* const function, const char* const parameter,
-    const char* const file, const int line, const LargestIntegralType values[],
+    const char* const file, const int line, const uintmax_t values[],
     const size_t number_of_values, const int count);
 void _expect_not_in_set(
     const char* const function, const char* const parameter,
-    const char* const file, const int line, const LargestIntegralType values[],
+    const char* const file, const int line, const uintmax_t values[],
     const size_t number_of_values, const int count);
 
 void _expect_in_range(
     const char* const function, const char* const parameter,
     const char* const file, const int line,
-    const LargestIntegralType minimum,
-    const LargestIntegralType maximum, const int count);
+    const uintmax_t minimum,
+    const uintmax_t maximum, const int count);
 void _expect_not_in_range(
     const char* const function, const char* const parameter,
     const char* const file, const int line,
-    const LargestIntegralType minimum,
-    const LargestIntegralType maximum, const int count);
+    const uintmax_t minimum,
+    const uintmax_t maximum, const int count);
 
 void _expect_value(
     const char* const function, const char* const parameter,
-    const char* const file, const int line, const LargestIntegralType value,
+    const char* const file, const int line, const uintmax_t value,
     const int count);
 void _expect_not_value(
     const char* const function, const char* const parameter,
-    const char* const file, const int line, const LargestIntegralType value,
+    const char* const file, const int line, const uintmax_t value,
     const int count);
 
 void _expect_string(
@@ -431,7 +469,7 @@ void _expect_any(
 
 void _check_expected(
     const char * const function_name, const char * const parameter_name,
-    const char* file, const int line, const LargestIntegralType value);
+    const char* file, const int line, const uintmax_t value);
 
 // Can be used to replace assert in tested code so that in conjuction with
 // check_assert() it's possible to determine whether an assert condition has
@@ -440,16 +478,16 @@ void mock_assert(const int result, const char* const expression,
                  const char * const file, const int line);
 
 void _will_return(const char * const function_name, const char * const file,
-                  const int line, const LargestIntegralType value,
+                  const int line, const uintmax_t value,
                   const int count);
-void _assert_true(const LargestIntegralType result,
+void _assert_true(const uintmax_t result,
                   const char* const expression,
                   const char * const file, const int line);
 void _assert_int_equal(
-    const LargestIntegralType a, const LargestIntegralType b,
+    const uintmax_t a, const uintmax_t b,
     const char * const file, const int line);
 void _assert_int_not_equal(
-    const LargestIntegralType a, const LargestIntegralType b,
+    const uintmax_t a, const uintmax_t b,
     const char * const file, const int line);
 void _assert_string_equal(const char * const a, const char * const b,
                           const char * const file, const int line);
@@ -462,16 +500,16 @@ void _assert_memory_not_equal(const void * const a, const void * const b,
                               const size_t size, const char* const file,
                               const int line);
 void _assert_in_range(
-    const LargestIntegralType value, const LargestIntegralType minimum,
-    const LargestIntegralType maximum, const char* const file, const int line);
+    const uintmax_t value, const uintmax_t minimum,
+    const uintmax_t maximum, const char* const file, const int line);
 void _assert_not_in_range(
-    const LargestIntegralType value, const LargestIntegralType minimum,
-    const LargestIntegralType maximum, const char* const file, const int line);
+    const uintmax_t value, const uintmax_t minimum,
+    const uintmax_t maximum, const char* const file, const int line);
 void _assert_in_set(
-    const LargestIntegralType value, const LargestIntegralType values[],
+    const uintmax_t value, const uintmax_t values[],
     const size_t number_of_values, const char* const file, const int line);
 void _assert_not_in_set(
-    const LargestIntegralType value, const LargestIntegralType values[],
+    const uintmax_t value, const uintmax_t values[],
     const size_t number_of_values, const char* const file, const int line);
 
 void* _test_malloc(const size_t size, const char* file, const int line);
