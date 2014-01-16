@@ -46,10 +46,9 @@ int __stdcall IsDebuggerPresent();
 
 /* Largest integral type.  This type should be large enough to hold any
  * pointer or integer supported by the compiler. */
-#ifndef _UINTMAX_T
-#define _UINTMAX_T
+#ifndef HAVE_UINTMAX_T
 typedef unsigned long long uintmax_t;
-#endif /* _UINTMAX_T */
+#endif
 
 /* Printf formats used to display uintmax_t. */
 #ifdef _WIN32

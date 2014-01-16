@@ -6,15 +6,10 @@
 ## Process this file with automake to produce Makefile.in
 
 # Make sure that when we re-make ./configure, we get the macros we need
-ACLOCAL_AMFLAGS = -I `pwd`/m4
+ACLOCAL_AMFLAGS = -I ./m4
 
 # This is so we can #include <google/foo>
-AM_CPPFLAGS = -I$(top_srcdir)/src
-
-# These are good warnings to turn on by default
-if GCC
-AM_CXXFLAGS = -Wall -Wwrite-strings -Woverloaded-virtual -Wno-sign-compare
-endif
+AM_CPPFLAGS = -I$(top_srcdir)/src -Wall -Werror
 
 googleincludedir = $(includedir)/google
 ## The .h files you want to install (that is, .h files that people
