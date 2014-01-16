@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <database.h>
@@ -20,8 +21,13 @@
 #define snprintf _snprintf
 #endif // _WIN32
 
+DatabaseConnection* connect_to_customer_database(void);
+unsigned int get_customer_id_by_name(
+        DatabaseConnection * const connection,
+        const char * const customer_name);
+
 // Connect to the database containing customer information.
-DatabaseConnection* connect_to_customer_database() {
+DatabaseConnection* connect_to_customer_database(void) {
     return connect_to_database("customers.abcd.org", 321);
 }
 
@@ -40,5 +46,5 @@ unsigned int get_customer_id_by_name(
     if (number_of_results != 1) {
         return -1;
     }
-    return (unsigned int)results[0];
+    return (uintptr_t)results[0];
 }
