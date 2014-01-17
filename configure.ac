@@ -56,6 +56,8 @@ AC_CHECK_HEADERS(stdio.h)
 AC_CHECK_HEADERS(stdlib.h)
 AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(signal.h)
+AC_CHECK_HEADERS(inttypes.h)
+AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_TYPES([unsigned long long, uintmax_t])
 
 # Find out what namespace 'normal' STL code lives in, and also what namespace

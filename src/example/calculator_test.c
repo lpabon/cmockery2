@@ -16,6 +16,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>
+#include <inttypes.h>
 #include "cmockery.h"
 #include <stdio.h>
 
