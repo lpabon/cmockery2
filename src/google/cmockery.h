@@ -134,6 +134,9 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
 #define will_return(function, value) \
     _will_return(#function, __FILE__, __LINE__, \
                  cast_to_largest_integral_type(value), 1)
+#define will_always_return(function, value) \
+    _will_return(#function, __FILE__, __LINE__, \
+                 cast_to_largest_integral_type(value), -1)
 #define will_return_count(function, value, count) \
     _will_return(#function, __FILE__, __LINE__, \
                  cast_to_largest_integral_type(value), count)
