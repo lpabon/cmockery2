@@ -1,4 +1,3 @@
-## This is a boilerplate file for Google opensource projects.
 ## To make it useful, replace <<TEXT>> with actual text for your project.
 ## Also, look at comments with "## double hashes" to see if any are worth
 ## uncommenting or modifying.
@@ -9,7 +8,7 @@
 # make sure we're interpreted by some minimal autoconf
 AC_PREREQ(2.57)
 
-AC_INIT(cmockery, 0.1.2, opensource@google.com)
+AC_INIT(cmockery, 0.9, lpabon@redhat.com)
 # The argument here is just something that should be in the current directory
 # (for sanity checking)
 AC_CONFIG_SRCDIR(README)
@@ -63,7 +62,6 @@ AC_CHECK_TYPES([unsigned long long, uintmax_t])
 # Find out what namespace 'normal' STL code lives in, and also what namespace
 # the user wants our classes to be defined in
 AC_CXX_STL_NAMESPACE
-AC_DEFINE_GOOGLE_NAMESPACE(google)
 
 ## Check out ../autoconf/ for other macros you can call to do useful stuff
 

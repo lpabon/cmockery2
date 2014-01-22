@@ -1,3 +1,8 @@
+Wed Jan 22 16:44:14 2014 Luis Pabon, Jr. <lpabon@redhat.com>
+	* cmockery: version 0.9
+	* Added cmockery_override.h to be able to override standard tools
+	* Changed include directory from google to cmockery
+
 Mon Sep 15 17:21:22 2008 Google Inc. <opensource@google.com>
 	* cmockery: version 0.12
 	* Made it possible to specify additional compiler, lib tool and link 

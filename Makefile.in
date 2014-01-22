@@ -45,17 +45,16 @@ noinst_PROGRAMS = calculator$(EXEEXT) calculator_test$(EXEEXT) \
 	product_database_test$(EXEEXT) run_tests$(EXEEXT) \
 	$(am__EXEEXT_1)
 subdir = .
-DIST_COMMON = README $(am__configure_deps) $(dist_doc_DATA) \
-	$(googleinclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(top_srcdir)/configure \
-	$(top_srcdir)/src/config.h.in AUTHORS COPYING ChangeLog \
-	INSTALL NEWS compile config.guess config.sub depcomp \
-	install-sh ltmain.sh missing mkinstalldirs
+DIST_COMMON = README $(am__configure_deps) $(cmockeryinclude_HEADERS) \
+	$(dist_doc_DATA) $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(top_srcdir)/configure $(top_srcdir)/src/config.h.in AUTHORS \
+	COPYING ChangeLog INSTALL NEWS compile config.guess config.sub \
+	depcomp install-sh ltmain.sh missing mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/google_namespace.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/namespaces.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
+	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
+	$(top_srcdir)/m4/namespaces.m4 \
 	$(top_srcdir)/m4/stl_namespace.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -87,7 +86,7 @@ am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(docdir)" \
-	"$(DESTDIR)$(googleincludedir)"
+	"$(DESTDIR)$(cmockeryincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libcmockery_la_LIBADD =
 am_libcmockery_la_OBJECTS = libcmockery_la-cmockery.lo
@@ -185,7 +184,7 @@ DIST_SOURCES = $(libcmockery_la_SOURCES) \
 	$(customer_database_test_SOURCES) $(key_value_test_SOURCES) \
 	$(product_database_test_SOURCES) $(run_tests_SOURCES)
 DATA = $(dist_doc_DATA)
-HEADERS = $(googleinclude_HEADERS)
+HEADERS = $(cmockeryinclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
@@ -321,10 +320,10 @@ top_srcdir = @top_srcdir@
 # Make sure that when we re-make ./configure, we get the macros we need
 ACLOCAL_AMFLAGS = -I ./m4
 
-# This is so we can #include <google/foo>
+# This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src -Wall -Werror
-googleincludedir = $(includedir)/google
-googleinclude_HEADERS = src/google/cmockery_override.h src/google/cmockery.h
+cmockeryincludedir = $(includedir)/cmockery
+cmockeryinclude_HEADERS = src/cmockery/cmockery_override.h src/cmockery/cmockery.h
 dist_doc_DATA = AUTHORS COPYING ChangeLog INSTALL NEWS README doc/index.html \
 		windows/makefile
 
@@ -333,11 +332,11 @@ TESTS_ENVIRONMENT = CMOCKERY_ROOTDIR = $(top_srcdir)
 check_SCRIPTS = 
 # Every time you add a unittest to check_SCRIPTS, add it here too
 noinst_SCRIPTS = 
-libcmockery_la_SOURCES = src/config.h src/cmockery.c src/google/cmockery_override.h src/google/cmockery.h
-libcmockery_la_CFLAGS = -I$(top_srcdir)/src/google
+libcmockery_la_SOURCES = src/config.h src/cmockery.c src/cmockery/cmockery_override.h src/cmockery/cmockery.h
+libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery
 calculator_SOURCES = src/example/calculator.c src/config.h
 calculator_CFLAGS = 
-unit_test_CFLAGS = -I$(top_srcdir)/src/google \
+unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
                    -I$(top_srcdir)/src/example -DUNIT_TESTING=1
 
 calculator_test_SOURCES = src/example/calculator_test.c \
@@ -776,26 +775,26 @@ uninstall-dist_docDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(docdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(docdir)" && rm -f $$files
-install-googleincludeHEADERS: $(googleinclude_HEADERS)
+install-cmockeryincludeHEADERS: $(cmockeryinclude_HEADERS)
 	@$(NORMAL_INSTALL)
-	test -z "$(googleincludedir)" || $(MKDIR_P) "$(DESTDIR)$(googleincludedir)"
-	@list='$(googleinclude_HEADERS)'; test -n "$(googleincludedir)" || list=; \
+	test -z "$(cmockeryincludedir)" || $(MKDIR_P) "$(DESTDIR)$(cmockeryincludedir)"
+	@list='$(cmockeryinclude_HEADERS)'; test -n "$(cmockeryincludedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(googleincludedir)'"; \
-	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(googleincludedir)" || exit $$?; \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(cmockeryincludedir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(cmockeryincludedir)" || exit $$?; \
 	done
 
-uninstall-googleincludeHEADERS:
+uninstall-cmockeryincludeHEADERS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(googleinclude_HEADERS)'; test -n "$(googleincludedir)" || list=; \
+	@list='$(cmockeryinclude_HEADERS)'; test -n "$(cmockeryincludedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(googleincludedir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(googleincludedir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(cmockeryincludedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(cmockeryincludedir)" && rm -f $$files
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -1095,7 +1094,7 @@ check: check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
 		$(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(googleincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(docdir)" "$(DESTDIR)$(cmockeryincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1147,7 +1146,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_docDATA install-googleincludeHEADERS
+install-data-am: install-cmockeryincludeHEADERS install-dist_docDATA
 
 install-dvi: install-dvi-am
 
@@ -1195,7 +1194,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_docDATA uninstall-googleincludeHEADERS \
+uninstall-am: uninstall-cmockeryincludeHEADERS uninstall-dist_docDATA \
 	uninstall-libLTLIBRARIES
 
 .MAKE: check-am install-am install-strip
@@ -1207,17 +1206,17 @@ uninstall-am: uninstall-dist_docDATA uninstall-googleincludeHEADERS \
 	distclean distclean-compile distclean-generic distclean-hdr \
 	distclean-libtool distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am \
-	install-dist_docDATA install-dvi install-dvi-am install-exec \
-	install-exec-am install-googleincludeHEADERS install-html \
+	install install-am install-cmockeryincludeHEADERS install-data \
+	install-data-am install-dist_docDATA install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
 	install-ps install-ps-am install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-dist_docDATA \
-	uninstall-googleincludeHEADERS uninstall-libLTLIBRARIES
+	tags uninstall uninstall-am uninstall-cmockeryincludeHEADERS \
+	uninstall-dist_docDATA uninstall-libLTLIBRARIES
 
 
 rpm: dist-gzip packages/rpm.sh packages/rpm/rpm.spec

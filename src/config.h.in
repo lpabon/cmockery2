@@ -1,8 +1,5 @@
 /* src/config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Namespace for Google classes */
-#undef GOOGLE_NAMESPACE
-
 /* Define to 1 if you have the <assert.h> header file. */
 #undef HAVE_ASSERT_H
 
@@ -138,9 +135,3 @@
 
 /* Version number of package */
 #undef VERSION
-
-/* Stops putting the code inside the Google namespace */
-#undef _END_GOOGLE_NAMESPACE_
-
-/* Puts following code inside the Google namespace */
-#undef _START_GOOGLE_NAMESPACE_

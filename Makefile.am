@@ -8,13 +8,13 @@
 # Make sure that when we re-make ./configure, we get the macros we need
 ACLOCAL_AMFLAGS = -I ./m4
 
-# This is so we can #include <google/foo>
+# This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src -Wall -Werror
 
-googleincludedir = $(includedir)/google
+cmockeryincludedir = $(includedir)/cmockery
 ## The .h files you want to install (that is, .h files that people
 ## who install this package can include in their own applications.)
-googleinclude_HEADERS = src/google/cmockery_override.h src/google/cmockery.h
+cmockeryinclude_HEADERS = src/cmockery/cmockery_override.h src/cmockery/cmockery.h
 
 docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
 ## This is for HTML and other documentation you want to install.
@@ -40,14 +40,14 @@ noinst_SCRIPTS =
 ## vvvv RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
 
 lib_LTLIBRARIES += libcmockery.la
-libcmockery_la_SOURCES = src/config.h src/cmockery.c src/google/cmockery_override.h src/google/cmockery.h
-libcmockery_la_CFLAGS = -I$(top_srcdir)/src/google
+libcmockery_la_SOURCES = src/config.h src/cmockery.c src/cmockery/cmockery_override.h src/cmockery/cmockery.h
+libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery
 
 noinst_PROGRAMS = calculator
 calculator_SOURCES = src/example/calculator.c src/config.h
 calculator_CFLAGS =
 
-unit_test_CFLAGS = -I$(top_srcdir)/src/google \
+unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
                    -I$(top_srcdir)/src/example -DUNIT_TESTING=1
 
 noinst_PROGRAMS += calculator_test
