@@ -436,7 +436,7 @@ typedef struct CheckParameterEvent {
 } CheckParameterEvent;
 
 // Used by expect_assert_failure() and mock_assert().
-extern int global_expecting_assert;
+extern volatile int global_expecting_assert;
 extern jmp_buf global_expect_assert_env;
 extern const char * global_last_failed_assert;
 

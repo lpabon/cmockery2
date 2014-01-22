@@ -14,7 +14,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src -Wall -Werror
 googleincludedir = $(includedir)/google
 ## The .h files you want to install (that is, .h files that people
 ## who install this package can include in their own applications.)
-googleinclude_HEADERS = src/google/cmockery.h
+googleinclude_HEADERS = src/google/cmockery_override.h src/google/cmockery.h
 
 docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
 ## This is for HTML and other documentation you want to install.
@@ -40,7 +40,7 @@ noinst_SCRIPTS =
 ## vvvv RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
 
 lib_LTLIBRARIES += libcmockery.la
-libcmockery_la_SOURCES = src/config.h src/cmockery.c src/google/cmockery.h
+libcmockery_la_SOURCES = src/config.h src/cmockery.c src/google/cmockery_override.h src/google/cmockery.h
 libcmockery_la_CFLAGS = -I$(top_srcdir)/src/google
 
 noinst_PROGRAMS = calculator
@@ -77,6 +77,7 @@ customer_database_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += key_value_test
 key_value_test_SOURCES = src/example/key_value_test.c \
+			 src/example/key_value.h \
                          src/example/key_value.c
 key_value_test_CFLAGS = $(unit_test_CFLAGS)
 key_value_test_LDADD = libcmockery.la

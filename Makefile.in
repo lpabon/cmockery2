@@ -324,7 +324,7 @@ ACLOCAL_AMFLAGS = -I ./m4
 # This is so we can #include <google/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src -Wall -Werror
 googleincludedir = $(includedir)/google
-googleinclude_HEADERS = src/google/cmockery.h
+googleinclude_HEADERS = src/google/cmockery_override.h src/google/cmockery.h
 dist_doc_DATA = AUTHORS COPYING ChangeLog INSTALL NEWS README doc/index.html \
 		windows/makefile
 
@@ -333,7 +333,7 @@ TESTS_ENVIRONMENT = CMOCKERY_ROOTDIR = $(top_srcdir)
 check_SCRIPTS = 
 # Every time you add a unittest to check_SCRIPTS, add it here too
 noinst_SCRIPTS = 
-libcmockery_la_SOURCES = src/config.h src/cmockery.c src/google/cmockery.h
+libcmockery_la_SOURCES = src/config.h src/cmockery.c src/google/cmockery_override.h src/google/cmockery.h
 libcmockery_la_CFLAGS = -I$(top_srcdir)/src/google
 calculator_SOURCES = src/example/calculator.c src/config.h
 calculator_CFLAGS = 
@@ -362,6 +362,7 @@ customer_database_test_SOURCES = src/example/customer_database_test.c \
 customer_database_test_CFLAGS = $(unit_test_CFLAGS)
 customer_database_test_LDADD = libcmockery.la
 key_value_test_SOURCES = src/example/key_value_test.c \
+			 src/example/key_value.h \
                          src/example/key_value.c
 
 key_value_test_CFLAGS = $(unit_test_CFLAGS)

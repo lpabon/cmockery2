@@ -202,7 +202,7 @@ static int global_running_test = 0;
 // Keeps track of the calling context returned by setenv() so that
 // mock_assert() can optionally jump back to expect_assert_failure().
 jmp_buf global_expect_assert_env;
-int global_expecting_assert = 0;
+volatile int global_expecting_assert = 0;
 const char *global_last_failed_assert = NULL;
 
 // Keeps a map of the values that functions will have to return to provide
