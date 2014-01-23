@@ -36,19 +36,25 @@ extern void* _test_calloc(const size_t number_of_elements, const size_t size,
 extern void _test_free(void* const ptr, const char* file, const int line);
 extern void mock_assert(const int result, const char* const expression,
                         const char * const file, const int line);
-extern int example_test_printf(const char *format, ...);
-extern int example_test_fprintf(FILE * const file, const char *format, ...);
 extern void print_message(const char *format, ...);
-int example_main(int argc, char *argv[]);
 
 
 /* Reset any previous definitions */
+#ifdef assert
 #undef assert
+#endif // assert
+
+#ifdef malloc
 #undef malloc
+#endif // malloc
+
+#ifdef calloc
 #undef calloc
+#endif // calloc
+
+#ifdef free
 #undef free
-#undef printf
-#undef fprintf
+#endif // free
 
 /* Redirect to use test functions */
 #define assert(expression) \
@@ -56,8 +62,6 @@ int example_main(int argc, char *argv[]);
 #define malloc(size) _test_malloc(size, __FILE__, __LINE__)
 #define calloc(num, size) _test_calloc(num, size, __FILE__, __LINE__)
 #define free(ptr) _test_free(ptr, __FILE__, __LINE__)
-#define printf example_test_printf
-#define main example_main
 
 
 #endif /* UNIT_TESTING */

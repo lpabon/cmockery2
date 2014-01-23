@@ -28,10 +28,33 @@
 #include <string.h>
 
 #ifdef UNIT_TESTING
-#include <cmockery_override.h>
+
+/* Redirect printf to a function in the test application so it's possible to
+ * test the standard output. */
+#ifdef printf
+#undef printf
+#endif // printf
+extern int example_test_printf(const char *format, ...);
+#define printf example_test_printf
+
+/* Redirect fprintf to a function in the test application so it's possible to
+ * test error messages. */
+#ifdef fprintf
+#undef fprintf
+#endif // fprintf
+extern int example_test_fprintf(FILE * const file, const char *format, ...);
+#define fprintf example_test_fprintf
+
+/* main is defined in the unit test so redefine name of the the main function
+ * here. */
+int example_main(int argc, char *argv[]);
+#define main example_main
+
 /* All functions in this object need to be exposed to the test application,
  * so redefine static to nothing. */
 #define static
+
+#include <cmockery_override.h>
 #endif
 
 // A binary arithmetic integer operation (add, subtract etc.)
