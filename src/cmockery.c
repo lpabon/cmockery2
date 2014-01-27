@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif /* HAVE_INTTYPES_H */
@@ -154,6 +155,32 @@ typedef struct CheckMemoryData {
     size_t size;
 } CheckMemoryData;
 
+
+// xUnit Test case data
+typedef struct {
+    const char *name;
+    double time_in_secs;
+    int failed;
+#define XUNIT_TESTCASE_MSG_SIZE 1024
+    char *system_out_msg[XUNIT_TESTCASE_MSG_SIZE];
+    /** Only populated if the testcase failed */
+    char *failed_msg[XUNIT_TESTCASE_MSG_SIZE];
+} XunitTestCase;
+
+
+// xUnit Test suite which in cmockery is the output
+// test program.
+typedef struct {
+    const char *name;
+    int errors;
+    int failures;
+    int tests;
+    int skip;
+    double time_in_secs;
+    XunitTestCase *testcases;
+} XunitTestSuite;
+
+
 static ListNode* list_initialize(ListNode * const node);
 static ListNode* list_add(ListNode * const head, ListNode *new_node);
 static ListNode* list_add_value(ListNode * const head, const void *value,
@@ -192,6 +219,11 @@ static int check_for_leftover_values(
 static void initialize_testing(const char *test_name);
 // This must be called at the end of a test to free() allocated structures.
 static void teardown_testing(const char *test_name);
+int _run_test(
+    const char * const function_name, const UnitTestFunction Function,
+    void ** const volatile state, const UnitTestFunctionType function_type,
+    const void* const heap_check_point,
+    XunitTestCase *testcase);
 
 
 // Keeps track of the calling context returned by setenv() so that the fail()
@@ -1598,7 +1630,8 @@ void print_error(const char* const format, ...) {
 int _run_test(
         const char * const function_name,  const UnitTestFunction Function,
         void ** const volatile state, const UnitTestFunctionType function_type,
-        const void* const heap_check_point) {
+        const void* const heap_check_point, XunitTestCase *testcase) {
+
     const ListNode * const volatile check_point = (const ListNode*)
         (heap_check_point ?
          heap_check_point : check_point_allocated_blocks());
@@ -1670,7 +1703,9 @@ int _run_test(
 }
 
 
-int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
+int _run_tests(const UnitTest * const tests,
+        const size_t number_of_tests,
+        const char *testfilename) {
     // Whether to execute the next test.
     int run_next_test = 1;
     // Whether the previous test failed.
@@ -1687,6 +1722,15 @@ int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
     size_t setups = 0;
     // Number of teardown functions.
     size_t teardowns = 0;
+    // Collect Xunit data
+    XunitTestSuite testsuite;
+    clock_t ts_start, ts_end;
+
+
+    // Initialize Xunit data
+    memset(&testsuite, 0, sizeof(XunitTestSuite));
+    testsuite.name = testfilename;
+    testsuite.testcases = (XunitTestCase *)calloc(number_of_tests, sizeof(XunitTestCase));
     /* A stack of test states.  A state is pushed on the stack
      * when a test setup occurs and popped on tear down. */
     TestState* test_states =
@@ -1701,6 +1745,9 @@ int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
 
     // Make sure uintmax_t is at least the size of a pointer.
     assert_true(sizeof(uintmax_t) >= sizeof(void*));
+
+    // Start testsuite timer
+    ts_start = clock();
 
     while (current_test < number_of_tests) {
         const ListNode *test_check_point = NULL;
@@ -1742,7 +1789,8 @@ int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
 
         if (run_next_test) {
             int failed = _run_test(test->name, test->function, current_state,
-                                   test->function_type, test_check_point);
+                                   test->function_type, test_check_point,
+                                   &testsuite.testcases[current_test]);
             if (failed) {
                 failed_names[total_failed] = test->name;
             }
@@ -1778,6 +1826,15 @@ int _run_tests(const UnitTest * const tests, const size_t number_of_tests) {
             }
         }
     }
+
+    // Used to measure elapsed time by the entire testuite
+    ts_end = clock();
+
+    // Save test suite results
+    testsuite.time_in_secs = ((double)ts_end-(double)ts_start) / (double)(CLOCKS_PER_SEC) ;
+    testsuite.errors = 0; // still need to figure how to calculate this one.
+    testsuite.failures = total_failed;
+    testsuite.tests = tests_executed - total_failed;
 
     print_message("[==========] %d test(s) run.\n", tests_executed);
     print_error("[  PASSED  ] %d test(s).\n", tests_executed - total_failed);

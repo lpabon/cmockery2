@@ -316,9 +316,6 @@ __FILE__, __LINE__)
 // Forces the test to fail immediately and quit.
 #define fail() _fail(__FILE__, __LINE__)
 
-// Generic method to kick off testing
-#define run_test(f) _run_test(#f, f, NULL, UNIT_TEST_FUNCTION_TYPE_TEST, NULL)
-
 // Initializes a UnitTest structure.
 #define unit_test(f) { #f, f, UNIT_TEST_FUNCTION_TYPE_TEST }
 #define unit_test_setup(test, setup) \
@@ -349,7 +346,9 @@ __FILE__, __LINE__)
  *     return run_tests(tests);
  * }
  */
-#define run_tests(tests) _run_tests(tests, sizeof(tests) / sizeof(tests)[0])
+#define run_tests(tests) _run_tests(tests, \
+        sizeof(tests) / sizeof(tests)[0], \
+        __FILE__)
 
 // Dynamic allocators
 #define test_malloc(size) _test_malloc(size, __FILE__, __LINE__)
@@ -553,11 +552,9 @@ void* _test_calloc(const size_t number_of_elements, const size_t size,
 void _test_free(void* const ptr, const char* file, const int line);
 
 void _fail(const char * const file, const int line);
-int _run_test(
-    const char * const function_name, const UnitTestFunction Function,
-    void ** const volatile state, const UnitTestFunctionType function_type,
-    const void* const heap_check_point);
-int _run_tests(const UnitTest * const tests, const size_t number_of_tests);
+int _run_tests(const UnitTest * const tests,
+        const size_t number_of_tests,
+        const char *testfilename);
 
 // Standard output and error print methods.
 void print_message(const char* const format, ...);
