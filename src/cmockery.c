@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Google Inc.
+ * Copyright 2014 Luis Pabon, Jr.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <sys/time.h>
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
 #endif /* HAVE_INTTYPES_H */
@@ -48,6 +49,7 @@ WINBASEAPI BOOL WINAPI IsDebuggerPresent(VOID);
 // Cmockery
 #include <cmockery.h>
 
+#define XUNIT_TESTCASE_MSG_SIZE 4096
 // Size of guard bytes around dynamically allocated blocks.
 #define MALLOC_GUARD_SIZE 16
 // Pattern used to initialize guard blocks.
@@ -159,12 +161,11 @@ typedef struct CheckMemoryData {
 // xUnit Test case data
 typedef struct {
     const char *name;
-    double time_in_secs;
+    double time_in_msecs;
     int failed;
-#define XUNIT_TESTCASE_MSG_SIZE 1024
-    char *system_out_msg[XUNIT_TESTCASE_MSG_SIZE];
+    char system_out_msg[XUNIT_TESTCASE_MSG_SIZE];
     /** Only populated if the testcase failed */
-    char *failed_msg[XUNIT_TESTCASE_MSG_SIZE];
+    char failed_msg[XUNIT_TESTCASE_MSG_SIZE];
 } XunitTestCase;
 
 
@@ -176,11 +177,11 @@ typedef struct {
     int failures;
     int tests;
     int skip;
-    double time_in_secs;
+    double time_in_msecs;
     XunitTestCase *testcases;
 } XunitTestSuite;
 
-
+void create_report( const XunitTestSuite *testsuite );
 static ListNode* list_initialize(ListNode * const node);
 static ListNode* list_add(ListNode * const head, ListNode *new_node);
 static ListNode* list_add_value(ListNode * const head, const void *value,
@@ -230,6 +231,7 @@ int _run_test(
 // method can jump out of a test.
 static jmp_buf global_run_test_env;
 static int global_running_test = 0;
+static XunitTestCase *global_current_testcase = NULL;
 
 // Keeps track of the calling context returned by setenv() so that
 // mock_assert() can optionally jump back to expect_assert_failure().
@@ -1590,10 +1592,19 @@ static LONG WINAPI exception_filter(EXCEPTION_POINTERS *exception_pointers) {
 
 // Standard output and error print methods.
 void vprint_message(const char* const format, va_list args) {
-    char buffer[1024];
+    char buffer[XUNIT_TESTCASE_MSG_SIZE];
     vsnprintf(buffer, sizeof(buffer), format, args);
     printf("%s", buffer);
     fflush(stdout);
+    if (NULL != global_current_testcase) {
+            int space_available = XUNIT_TESTCASE_MSG_SIZE
+                    -strlen(global_current_testcase->failed_msg)-1;
+            if (space_available > 0) {
+                strncat(global_current_testcase->system_out_msg,
+                        buffer,
+                        space_available);
+            }
+    }
 #ifdef _WIN32
     OutputDebugString(buffer);
 #endif // _WIN32
@@ -1601,10 +1612,21 @@ void vprint_message(const char* const format, va_list args) {
 
 
 void vprint_error(const char* const format, va_list args) {
-    char buffer[1024];
+    char buffer[XUNIT_TESTCASE_MSG_SIZE];
     vsnprintf(buffer, sizeof(buffer), format, args);
     fprintf(stderr, "%s", buffer);
     fflush(stderr);
+    if (NULL != global_current_testcase) {
+            int space_available = XUNIT_TESTCASE_MSG_SIZE
+                    -strlen(global_current_testcase->failed_msg)-1;
+            if (space_available > 0) {
+                strncat(global_current_testcase->failed_msg,
+                        buffer,
+                        space_available);
+            }
+    }
+
+
 #ifdef _WIN32
     OutputDebugString(buffer);
 #endif // _WIN32
@@ -1625,7 +1647,6 @@ void print_error(const char* const format, ...) {
     vprint_error(format, args);
     va_end(args);
 }
-
 
 int _run_test(
         const char * const function_name,  const UnitTestFunction Function,
@@ -1663,8 +1684,22 @@ int _run_test(
     }
     initialize_testing(function_name);
     global_running_test = 1;
+    testcase->name = function_name;
+    global_current_testcase = testcase;
+
     if (setjmp(global_run_test_env) == 0) {
+        struct timeval time_start, time_end;
+        gettimeofday(&time_start, NULL);
+
+        // Execute test
         Function(state ? state : &current_state);
+
+        // Collect time data
+        gettimeofday(&time_end, NULL);
+        testcase->time_in_msecs = 
+            ( (time_end.tv_sec-time_start.tv_sec)*1000.0
+              + (time_end.tv_usec-time_start.tv_usec)/1000.0 );
+
         fail_if_leftover_values(function_name);
 
         /* If this is a setup function then ignore any allocated blocks
@@ -1699,6 +1734,8 @@ int _run_test(
 #endif // !_WIN32
     }
 
+    testcase->failed = rc;
+    global_current_testcase = NULL;
     return rc;
 }
 
@@ -1724,13 +1761,14 @@ int _run_tests(const UnitTest * const tests,
     size_t teardowns = 0;
     // Collect Xunit data
     XunitTestSuite testsuite;
-    clock_t ts_start, ts_end;
+    struct timeval time_start, time_end;
 
 
     // Initialize Xunit data
     memset(&testsuite, 0, sizeof(XunitTestSuite));
     testsuite.name = testfilename;
-    testsuite.testcases = (XunitTestCase *)calloc(number_of_tests, sizeof(XunitTestCase));
+    testsuite.testcases = (XunitTestCase *)malloc(number_of_tests*sizeof(XunitTestCase));
+    memset(testsuite.testcases, 0, number_of_tests*sizeof(XunitTestCase));
     /* A stack of test states.  A state is pushed on the stack
      * when a test setup occurs and popped on tear down. */
     TestState* test_states =
@@ -1747,12 +1785,12 @@ int _run_tests(const UnitTest * const tests,
     assert_true(sizeof(uintmax_t) >= sizeof(void*));
 
     // Start testsuite timer
-    ts_start = clock();
+    gettimeofday(&time_start, NULL);
 
     while (current_test < number_of_tests) {
         const ListNode *test_check_point = NULL;
         TestState *current_TestState;
-        const UnitTest * const test = &tests[current_test++];
+        const UnitTest * const test = &tests[current_test];
         if (!test->function) {
             continue;
         }
@@ -1825,16 +1863,20 @@ int _run_tests(const UnitTest * const tests,
                 break;
             }
         }
+        current_test++;
     }
 
     // Used to measure elapsed time by the entire testuite
-    ts_end = clock();
+    gettimeofday(&time_end, NULL);
 
     // Save test suite results
-    testsuite.time_in_secs = ((double)ts_end-(double)ts_start) / (double)(CLOCKS_PER_SEC) ;
+    testsuite.time_in_msecs = ((time_end.tv_sec-time_start.tv_sec)*1000.0
+              + (time_end.tv_usec-time_start.tv_usec)/1000.0 );
     testsuite.errors = 0; // still need to figure how to calculate this one.
     testsuite.failures = total_failed;
     testsuite.tests = tests_executed - total_failed;
+    create_report(&testsuite);
+    free(testsuite.testcases);
 
     print_message("[==========] %d test(s) run.\n", tests_executed);
     print_error("[  PASSED  ] %d test(s).\n", tests_executed - total_failed);
@@ -1860,4 +1902,17 @@ int _run_tests(const UnitTest * const tests,
 
     fail_if_blocks_allocated(check_point, "run_tests");
     return (int)total_failed;
+}
+
+void
+create_report( const XunitTestSuite *testsuite )
+{
+    char buffer[1024];
+    snprintf(buffer, sizeof(buffer), 
+        "<testcase name=\"%s\" time=\"%.3f\">",
+        testsuite->name,
+        testsuite->time_in_msecs);
+    printf("%s\n", buffer);
+
+
 }

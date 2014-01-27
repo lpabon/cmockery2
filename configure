@@ -15421,6 +15421,17 @@ _ACEOF
 fi
 done
 
+for ac_func in gettimeofday
+do :
+  ac_fn_c_check_func "$LINENO" "gettimeofday" "ac_cv_func_gettimeofday"
+if test "x$ac_cv_func_gettimeofday" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_GETTIMEOFDAY 1
+_ACEOF
+
+fi
+done
+
 for ac_header in assert.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "assert.h" "ac_cv_header_assert_h" "$ac_includes_default"
@@ -15553,12 +15564,12 @@ fi
 
 done
 
-for ac_header in time.h
+for ac_header in sys/time.h
 do :
-  ac_fn_c_check_header_mongrel "$LINENO" "time.h" "ac_cv_header_time_h" "$ac_includes_default"
-if test "x$ac_cv_header_time_h" = xyes; then :
+  ac_fn_c_check_header_mongrel "$LINENO" "sys/time.h" "ac_cv_header_sys_time_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_time_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_TIME_H 1
+#define HAVE_SYS_TIME_H 1
 _ACEOF
 
 fi
