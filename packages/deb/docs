@@ -3,5 +3,5 @@ COPYING
 ChangeLog
 INSTALL
 NEWS
-README
-doc/index.html
+README.md
+doc/usage.md
