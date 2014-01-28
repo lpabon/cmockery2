@@ -49,7 +49,7 @@ WINBASEAPI BOOL WINAPI IsDebuggerPresent(VOID);
 // Cmockery
 #include <cmockery.h>
 
-#define XUNIT_TESTCASE_MSG_SIZE 4096
+#define XUNIT_TESTCASE_MSG_SIZE 8196
 // Size of guard bytes around dynamically allocated blocks.
 #define MALLOC_GUARD_SIZE 16
 // Pattern used to initialize guard blocks.
@@ -178,6 +178,7 @@ typedef struct {
     int tests;
     int skip;
     double time_in_msecs;
+    int num_of_testcases;
     XunitTestCase *testcases;
 } XunitTestSuite;
 
@@ -1742,7 +1743,7 @@ int _run_test(
 
 int _run_tests(const UnitTest * const tests,
         const size_t number_of_tests,
-        const char *testfilename) {
+        const char *test_suite_name) {
     // Whether to execute the next test.
     int run_next_test = 1;
     // Whether the previous test failed.
@@ -1766,7 +1767,8 @@ int _run_tests(const UnitTest * const tests,
 
     // Initialize Xunit data
     memset(&testsuite, 0, sizeof(XunitTestSuite));
-    testsuite.name = testfilename;
+    testsuite.name = test_suite_name;
+    testsuite.num_of_testcases = number_of_tests;
     testsuite.testcases = (XunitTestCase *)malloc(number_of_tests*sizeof(XunitTestCase));
     memset(testsuite.testcases, 0, number_of_tests*sizeof(XunitTestCase));
     /* A stack of test states.  A state is pushed on the stack
@@ -1907,12 +1909,48 @@ int _run_tests(const UnitTest * const tests,
 void
 create_report( const XunitTestSuite *testsuite )
 {
-    char buffer[1024];
-    snprintf(buffer, sizeof(buffer), 
-        "<testcase name=\"%s\" time=\"%.3f\">",
-        testsuite->name,
-        testsuite->time_in_msecs);
-    printf("%s\n", buffer);
+    FILE *fp;
+    int testcase;
+    char xmlfile[1024];
 
+    // Make up the filename
+    snprintf(xmlfile, sizeof(xmlfile), "%s_xunit.xml",
+             testsuite->name);
+    fp = fopen(xmlfile, "w");
+    assert_non_null(fp);
+
+    // Setup header
+    fprintf(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+    fprintf(fp, "<testsuite name=\"%s\" time=\"%.3f\" "
+                "tests=\"%d\" failures=\"%d\" errors=\"%d\" >",
+                testsuite->name, testsuite->time_in_msecs,
+                testsuite->tests, testsuite->failures,
+                testsuite->errors);
+    // Add each testcase
+    for (testcase=0;
+         testcase < testsuite->num_of_testcases;
+         testcase++) {
+        XunitTestCase *tc = &testsuite->testcases[testcase];
+        fprintf(fp, "<testcase name=\"%s\" time=\"%.3f\" >",
+                tc->name, tc->time_in_msecs);
+        if (strcmp(tc->system_out_msg, "")) {
+            fprintf(fp, "<system-out><![CDATA[%s]]></system-out>",
+                    tc->system_out_msg);
+        }
+        if (tc->failed) {
+            if (strcmp(tc->failed_msg, "")) {
+                fprintf(fp, "<failure><![CDATA[%s]]></failure>",
+                        tc->failed_msg);
+            } else {
+                fprintf(fp, "<failure message=\"Unknown error\" />");
+            }
+        }
+        fprintf(fp, "</testcase>");
+    }
+
+
+    // Setup footer
+    fprintf(fp, "</testsuite>");
+    fclose(fp);
 
 }

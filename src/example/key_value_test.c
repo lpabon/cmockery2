@@ -67,5 +67,5 @@ int main(void) {
         unit_test_setup_teardown(test_sort_items_by_key, create_key_values,
                                  destroy_key_values),
     };
-    return run_tests(tests);
+    return run_tests(tests, "key_value");
 }

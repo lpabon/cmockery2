@@ -67,5 +67,5 @@ int main(void) {
         unit_test(test_get_customer_id_by_name),
 	unit_test(test_fail_connect_to_customer_database),
     };
-    return run_tests(tests);
+    return run_tests(tests, "customer_database");
 }

@@ -44,5 +44,5 @@ int main(int argc, char* argv[]) {
         unit_test(buffer_overflow_test),
         unit_test(buffer_underflow_test),
     };
-    return run_tests(tests);
+    return run_tests(tests, "allocate_module_test");
 }

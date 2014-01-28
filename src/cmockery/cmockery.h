@@ -346,9 +346,9 @@ __FILE__, __LINE__)
  *     return run_tests(tests);
  * }
  */
-#define run_tests(tests) _run_tests(tests, \
+#define run_tests(tests, test_suite_name) _run_tests(tests, \
         sizeof(tests) / sizeof(tests)[0], \
-        __FILE__)
+        (test_suite_name))
 
 // Dynamic allocators
 #define test_malloc(size) _test_malloc(size, __FILE__, __LINE__)
@@ -552,9 +552,11 @@ void* _test_calloc(const size_t number_of_elements, const size_t size,
 void _test_free(void* const ptr, const char* file, const int line);
 
 void _fail(const char * const file, const int line);
+
+// test_suite_name is the prefix to the %s_xunit.xml report
 int _run_tests(const UnitTest * const tests,
         const size_t number_of_tests,
-        const char *testfilename);
+        const char *test_suite_name);
 
 // Standard output and error print methods.
 void print_message(const char* const format, ...);

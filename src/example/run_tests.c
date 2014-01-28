@@ -29,5 +29,5 @@ int main(void) {
         unit_test(null_test_success),
     };
 
-    return run_tests(tests);
+    return run_tests(tests, "run");
 }

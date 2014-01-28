@@ -63,5 +63,5 @@ int main(void) {
         unit_test(test_connect_to_product_database_bad_url),
         unit_test(test_connect_to_product_database_missing_parameter),
     };
-    return run_tests(tests);
+    return run_tests(tests, "product_database");
 }

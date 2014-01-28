@@ -424,5 +424,5 @@ int main(int argc, char* argv[]) {
 		unit_test(test_example_main_no_args),
 		unit_test(test_example_main),
 	};
-	return run_tests(tests);
+	return run_tests(tests, "calculator");
 }

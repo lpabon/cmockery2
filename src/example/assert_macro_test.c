@@ -41,5 +41,5 @@ int main(int argc, char *argv[]) {
         unit_test(get_status_code_string_test),
         unit_test(string_to_status_code_test),
     };
-    return run_tests(tests);
+    return run_tests(tests, "assert_macro");
 }

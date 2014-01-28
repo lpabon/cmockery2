@@ -43,5 +43,5 @@ int main(int argc, char *argv[]) {
         unit_test(increment_value_assert),
         unit_test(decrement_value_fail),
     };
-    return run_tests(tests);
+    return run_tests(tests, "assert_module");
 }
