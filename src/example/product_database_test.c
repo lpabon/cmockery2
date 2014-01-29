@@ -60,8 +60,8 @@ static void test_connect_to_product_database_missing_parameter(void **state) {
 int main(void) {
     const UnitTest tests[] = {
         unit_test(test_connect_to_product_database),
-        unit_test(test_connect_to_product_database_bad_url),
-        unit_test(test_connect_to_product_database_missing_parameter),
+        unit_test_expect_failure(test_connect_to_product_database_bad_url),
+        unit_test_expect_failure(test_connect_to_product_database_missing_parameter),
     };
     return run_tests(tests, "product_database");
 }

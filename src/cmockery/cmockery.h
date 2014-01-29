@@ -323,6 +323,10 @@ __FILE__, __LINE__)
 #define unit_test_teardown(test, teardown) \
     { #test "_" #teardown, teardown, UNIT_TEST_FUNCTION_TYPE_TEARDOWN }
 
+// Used only for cmockery internal tests
+#define unit_test_expect_failure(f) \
+    { #f, f, UNIT_TEST_FUNCTION_TYPE_TEST_EXPECT_FAILURE}
+
 /* Initialize an array of UnitTest structures with a setup function for a test
  * and a teardown function.  Either setup or teardown can be NULL.
  */
@@ -404,9 +408,14 @@ typedef int (*CheckParameterValue)(const uintmax_t value,
 
 // Type of the unit test function.
 typedef enum UnitTestFunctionType {
+        /** Normal unit test */
     UNIT_TEST_FUNCTION_TYPE_TEST = 0,
+        /** Setup state for a unit test */
     UNIT_TEST_FUNCTION_TYPE_SETUP,
+        /** Teardown state used by a unit test */
     UNIT_TEST_FUNCTION_TYPE_TEARDOWN,
+        /** Used only for cmockery internal tests */
+    UNIT_TEST_FUNCTION_TYPE_TEST_EXPECT_FAILURE,
 } UnitTestFunctionType;
 
 /* Stores a unit test function with its name and type.

@@ -38,8 +38,8 @@ void string_to_status_code_test(void **state) {
 
 int main(int argc, char *argv[]) {
     const UnitTest tests[] = {
-        unit_test(get_status_code_string_test),
-        unit_test(string_to_status_code_test),
+        unit_test_expect_failure(get_status_code_string_test),
+        unit_test_expect_failure(string_to_status_code_test),
     };
     return run_tests(tests, "assert_macro");
 }

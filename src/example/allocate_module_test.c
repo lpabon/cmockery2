@@ -40,9 +40,9 @@ static void buffer_underflow_test(void **state) {
 
 int main(int argc, char* argv[]) {
     const UnitTest tests[] = {
-        unit_test(leak_memory_test),
-        unit_test(buffer_overflow_test),
-        unit_test(buffer_underflow_test),
+        unit_test_expect_failure(leak_memory_test),
+        unit_test_expect_failure(buffer_overflow_test),
+        unit_test_expect_failure(buffer_underflow_test),
     };
     return run_tests(tests, "allocate_module_test");
 }

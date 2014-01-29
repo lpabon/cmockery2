@@ -1680,7 +1680,8 @@ int _run_test(
 #endif // !_WIN32
     }
 
-    if (function_type == UNIT_TEST_FUNCTION_TYPE_TEST) {
+    if ((function_type == UNIT_TEST_FUNCTION_TYPE_TEST) ||
+        (function_type == UNIT_TEST_FUNCTION_TYPE_TEST_EXPECT_FAILURE)) {
         print_message("[ RUN      ] %s\n", function_name);
     }
     initialize_testing(function_name);
@@ -1717,7 +1718,12 @@ int _run_test(
         rc = 0;
     } else {
         global_running_test = 0;
-        print_message("[  FAILED  ] %s\n", function_name);
+        if (UNIT_TEST_FUNCTION_TYPE_TEST_EXPECT_FAILURE == function_type) {
+            rc = 0;
+            print_message("[EXPCT FAIL] %s\n", function_name);
+        } else {
+            print_message("[  FAILED  ] %s\n", function_name);
+        }
     }
     teardown_testing(function_name);
 
@@ -1799,6 +1805,7 @@ int _run_tests(const UnitTest * const tests,
 
         switch (test->function_type) {
         case UNIT_TEST_FUNCTION_TYPE_TEST:
+        case UNIT_TEST_FUNCTION_TYPE_TEST_EXPECT_FAILURE:
             run_next_test = 1;
             break;
         case UNIT_TEST_FUNCTION_TYPE_SETUP: {
@@ -1837,6 +1844,7 @@ int _run_tests(const UnitTest * const tests,
 
             switch (test->function_type) {
             case UNIT_TEST_FUNCTION_TYPE_TEST:
+            case UNIT_TEST_FUNCTION_TYPE_TEST_EXPECT_FAILURE:
                 previous_test_failed = failed;
                 total_failed += failed;
                 tests_executed ++;
@@ -1871,14 +1879,6 @@ int _run_tests(const UnitTest * const tests,
     // Used to measure elapsed time by the entire testuite
     gettimeofday(&time_end, NULL);
 
-    // Save test suite results
-    testsuite.time_in_msecs = ((time_end.tv_sec-time_start.tv_sec)*1000.0
-              + (time_end.tv_usec-time_start.tv_usec)/1000.0 );
-    testsuite.errors = 0; // still need to figure how to calculate this one.
-    testsuite.failures = total_failed;
-    testsuite.tests = tests_executed - total_failed;
-    create_report(&testsuite);
-    free(testsuite.testcases);
 
     print_message("[==========] %d test(s) run.\n", tests_executed);
     print_error("[  PASSED  ] %d test(s).\n", tests_executed - total_failed);
@@ -1890,7 +1890,7 @@ int _run_tests(const UnitTest * const tests,
             print_error("[  FAILED  ] %s\n", failed_names[i]);
         }
     } else {
-        print_error("\n %d FAILED TEST(S)\n", total_failed);
+        print_message("[  FAILED  ] %d test(s).\n", total_failed);
     }
 
     if (number_of_test_states) {
@@ -1899,10 +1899,20 @@ int _run_tests(const UnitTest * const tests,
         total_failed = (size_t)-1;
     }
 
+    // Save test suite results
+    testsuite.time_in_msecs = ((time_end.tv_sec-time_start.tv_sec)*1000.0
+              + (time_end.tv_usec-time_start.tv_usec)/1000.0 );
+    testsuite.errors = 0; // still need to figure how to calculate this one.
+    testsuite.failures = total_failed;
+    testsuite.tests = tests_executed - total_failed;
+    create_report(&testsuite);
+    free(testsuite.testcases);
+
     free(test_states);
     free((void*)failed_names);
 
     fail_if_blocks_allocated(check_point, "run_tests");
+
     return (int)total_failed;
 }
 
@@ -1926,6 +1936,7 @@ create_report( const XunitTestSuite *testsuite )
                 testsuite->name, testsuite->time_in_msecs,
                 testsuite->tests, testsuite->failures,
                 testsuite->errors);
+
     // Add each testcase
     for (testcase=0;
          testcase < testsuite->num_of_testcases;
@@ -1953,4 +1964,5 @@ create_report( const XunitTestSuite *testsuite )
     fprintf(fp, "</testsuite>");
     fclose(fp);
 
+    print_message("[  REPORT  ] Created %s report\n", xmlfile);
 }
