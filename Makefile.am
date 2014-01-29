@@ -32,10 +32,8 @@ lib_LTLIBRARIES =
 ## TESTS is for binary unittests, check_SCRIPTS for script-based unittests.
 ## TESTS_ENVIRONMENT sets environment variables for when you run unittest,
 ## but it only seems to take effect for *binary* unittests (argh!)
-TESTS =
-TESTS_ENVIRONMENT = CMOCKERY_ROOTDIR = $(top_srcdir)
+TESTS = 
 check_SCRIPTS =
-# Every time you add a unittest to check_SCRIPTS, add it here too
 noinst_SCRIPTS =
 
 
@@ -57,24 +55,29 @@ unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
                    -I$(top_srcdir)/src/example -DUNIT_TESTING=1
 
 noinst_PROGRAMS += calculator_test
+TESTS += calculator_test
 calculator_test_SOURCES = src/example/calculator_test.c \
                           $(calculator_SOURCES)
 calculator_test_CFLAGS = $(unit_test_CFLAGS)
 calculator_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += allocate_module_test
+# Don't add this one, it returns a fail exit status,
+# which is expected. TESTS += allocate_module_test
 allocate_module_test_SOURCES = src/example/allocate_module_test.c \
                                src/example/allocate_module.c
 allocate_module_test_CFLAGS = $(unit_test_CFLAGS)
 allocate_module_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += assert_macro_test
+TESTS += assert_macro_test
 assert_macro_test_SOURCES = src/example/assert_macro_test.c \
                             src/example/assert_macro.c
 assert_macro_test_CFLAGS = $(unit_test_CFLAGS)
 assert_macro_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += customer_database_test
+TESTS += customer_database_test
 customer_database_test_SOURCES = src/example/customer_database_test.c \
                                  src/example/customer_database.c \
                                  src/example/database.h
@@ -82,6 +85,7 @@ customer_database_test_CFLAGS = $(unit_test_CFLAGS)
 customer_database_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += key_value_test
+TESTS += key_value_test
 key_value_test_SOURCES = src/example/key_value_test.c \
 			 src/example/key_value.h \
                          src/example/key_value.c
@@ -89,6 +93,7 @@ key_value_test_CFLAGS = $(unit_test_CFLAGS)
 key_value_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += product_database_test
+TESTS += product_database_test
 product_database_testdir = src/example
 product_database_test_SOURCES = src/example/product_database_test.c \
                                 src/example/product_database.c \
@@ -97,6 +102,7 @@ product_database_test_CFLAGS = $(unit_test_CFLAGS)
 product_database_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += run_tests
+TESTS += run_tests
 run_tests_SOURCES = src/example/run_tests.c
 run_tests_CFLAGS = $(unit_test_CFLAGS)
 run_tests_LDADD = libcmockery.la
