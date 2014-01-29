@@ -173,6 +173,7 @@ typedef struct {
 // test program.
 typedef struct {
     const char *name;
+    char xmlfile[XUNIT_TESTCASE_MSG_SIZE];
     int errors;
     int failures;
     int tests;
@@ -182,7 +183,12 @@ typedef struct {
     XunitTestCase *testcases;
 } XunitTestSuite;
 
-void create_report( const XunitTestSuite *testsuite );
+void report_init( XunitTestSuite *testsuite,
+            const size_t number_of_tests,
+            const char *test_suite_name);
+void report_destroy( XunitTestSuite *testsuite );
+void report_create_error( const XunitTestSuite *testsuite );
+void report_create( const XunitTestSuite *testsuite );
 static ListNode* list_initialize(ListNode * const node);
 static ListNode* list_add(ListNode * const head, ListNode *new_node);
 static ListNode* list_add_value(ListNode * const head, const void *value,
@@ -1772,11 +1778,17 @@ int _run_tests(const UnitTest * const tests,
 
 
     // Initialize Xunit data
-    memset(&testsuite, 0, sizeof(XunitTestSuite));
-    testsuite.name = test_suite_name;
-    testsuite.num_of_testcases = number_of_tests;
-    testsuite.testcases = (XunitTestCase *)malloc(number_of_tests*sizeof(XunitTestCase));
-    memset(testsuite.testcases, 0, number_of_tests*sizeof(XunitTestCase));
+    report_init(&testsuite, number_of_tests, test_suite_name);
+
+    // Create an xml report which shows the test was unable
+    // to run because of errors.  This report will only
+    // be removed and replaced with the actual unit tests results
+    // only if it was able to run through all tests. This will
+    // inform Jenkins that a test was not able to run. Without
+    // this, it could cause Jenkins not see that some of the unit
+    // tests did not run and have 'silent' failures.
+    report_create_error(&testsuite);
+
     /* A stack of test states.  A state is pushed on the stack
      * when a test setup occurs and popped on tear down. */
     TestState* test_states =
@@ -1905,8 +1917,9 @@ int _run_tests(const UnitTest * const tests,
     testsuite.errors = 0; // still need to figure how to calculate this one.
     testsuite.failures = total_failed;
     testsuite.tests = tests_executed - total_failed;
-    create_report(&testsuite);
-    free(testsuite.testcases);
+    assert_null("BAH");
+    report_create(&testsuite);
+    report_destroy(&testsuite);
 
     free(test_states);
     free((void*)failed_names);
@@ -1917,16 +1930,53 @@ int _run_tests(const UnitTest * const tests,
 }
 
 void
-create_report( const XunitTestSuite *testsuite )
+report_init( XunitTestSuite *testsuite,
+            const size_t number_of_tests,
+            const char *test_suite_name)
+{
+
+    // Initialize testsuite
+    memset(testsuite, 0, sizeof(XunitTestSuite));
+    testsuite->name = test_suite_name;
+    testsuite->num_of_testcases = number_of_tests;
+
+    // Allocate memory for test cases
+    testsuite->testcases = (XunitTestCase *)malloc(number_of_tests*sizeof(XunitTestCase));
+    memset(testsuite->testcases, 0, number_of_tests*sizeof(XunitTestCase));
+
+    // Make up the filename
+    snprintf(testsuite->xmlfile, sizeof(testsuite->xmlfile), "%s_xunit.xml",
+             testsuite->name);
+}
+
+void
+report_create_error( const XunitTestSuite *testsuite )
+{
+    FILE *fp;
+
+    fp = fopen(testsuite->xmlfile, "w");
+    assert_non_null(fp);
+
+    // Setup header
+    fprintf(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+                "<testsuite name=\"%s\" time=\"0\" "
+                "tests=\"0\" failures=\"0\" errors=\"1\" >"
+                    "<testcase name=\"cmockery\" time=\"0\">"
+                        "<failure>Unable to run unit tests</failure>"
+                    "</testcase>"
+                "</testsuite>",
+                testsuite->name);
+    fclose(fp);
+
+}
+
+void
+report_create( const XunitTestSuite *testsuite )
 {
     FILE *fp;
     int testcase;
-    char xmlfile[1024];
 
-    // Make up the filename
-    snprintf(xmlfile, sizeof(xmlfile), "%s_xunit.xml",
-             testsuite->name);
-    fp = fopen(xmlfile, "w");
+    fp = fopen(testsuite->xmlfile, "w");
     assert_non_null(fp);
 
     // Setup header
@@ -1964,5 +2014,13 @@ create_report( const XunitTestSuite *testsuite )
     fprintf(fp, "</testsuite>");
     fclose(fp);
 
-    print_message("[  REPORT  ] Created %s report\n", xmlfile);
+    print_message("[  REPORT  ] Created %s report\n", testsuite->xmlfile);
 }
+
+void
+report_destroy( XunitTestSuite *testsuite )
+{
+    free(testsuite->testcases);
+}
+
+
