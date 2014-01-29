@@ -1917,7 +1917,8 @@ int _run_tests(const UnitTest * const tests,
     testsuite.errors = 0; // still need to figure how to calculate this one.
     testsuite.failures = total_failed;
     testsuite.tests = tests_executed - total_failed;
-    assert_null("BAH");
+
+    // Create xUnit xml report
     report_create(&testsuite);
     report_destroy(&testsuite);
 
