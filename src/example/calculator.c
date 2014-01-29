@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <cmockery/pbc.h> // From cmockery
+
 #ifdef UNIT_TESTING
 
 /* Redirect printf to a function in the test application so it's possible to
@@ -105,7 +107,7 @@ static int multiply(int a, int b) {
 }
 
 static int divide(int a, int b) {
-    assert(b);  // Check for divide by zero.
+    REQUIRE(b != 0);  // Check for divide by zero.
     return a / b;
 }
 
@@ -118,8 +120,9 @@ BinaryOperator find_operator_function_by_string(
         const OperatorFunction * const operator_functions,
         const char* const operator_string) {
     size_t i;
-    assert(!number_of_operator_functions || operator_functions);
-    assert(operator_string != NULL);
+
+    REQUIRE(!number_of_operator_functions || operator_functions);
+    REQUIRE(operator_string != NULL);
 
     for (i = 0; i < number_of_operator_functions; i++) {
         const OperatorFunction *const operator_function =
@@ -154,11 +157,11 @@ int perform_operation(
     char *end_of_integer;
     int value;
     int i;
-    assert(!number_of_arguments || arguments);
-    assert(!number_of_operator_functions || operator_functions);
-    assert(error_occurred != NULL);
-    assert(number_of_intermediate_values != NULL);
-    assert(intermediate_values != NULL);
+    REQUIRE(!number_of_arguments || arguments);
+    REQUIRE(!number_of_operator_functions || operator_functions);
+    REQUIRE(error_occurred != NULL);
+    REQUIRE(number_of_intermediate_values != NULL);
+    REQUIRE(intermediate_values != NULL);
 
     *error_occurred = 0;
     *number_of_intermediate_values = 0;

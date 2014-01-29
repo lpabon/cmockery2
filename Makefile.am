@@ -14,7 +14,9 @@ AM_CPPFLAGS = -I$(top_srcdir)/src -Wall -Werror
 cmockeryincludedir = $(includedir)/cmockery
 ## The .h files you want to install (that is, .h files that people
 ## who install this package can include in their own applications.)
-cmockeryinclude_HEADERS = src/cmockery/cmockery_override.h src/cmockery/cmockery.h
+cmockeryinclude_HEADERS = src/cmockery/cmockery_override.h\
+						  src/cmockery/cmockery.h\
+						  src/cmockery/pbc.h
 
 docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
 ## This is for HTML and other documentation you want to install.
@@ -40,7 +42,11 @@ noinst_SCRIPTS =
 ## vvvv RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
 
 lib_LTLIBRARIES += libcmockery.la
-libcmockery_la_SOURCES = src/config.h src/cmockery.c src/cmockery/cmockery_override.h src/cmockery/cmockery.h
+libcmockery_la_SOURCES = src/config.h\
+						 src/cmockery.c\
+						 src/cmockery/cmockery_override.h\
+						 src/cmockery/cmockery.h\
+						 src/cmockery/pbc.h
 libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery
 
 noinst_PROGRAMS = calculator
