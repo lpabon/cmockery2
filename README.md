@@ -7,5 +7,10 @@ cmockery2 project also adds xUnit xml reporting support to integrate with Jenkin
 This repo is a fork from http://code.google.com/p/cmockery-staging/ which
 is a fork from http://code.google.com/p/cmockery/.
 
+# Features
+* Lightweight C Unit test with mocking support
+* JUnit XML report output which can be used with Jenkins
+* Provides design-by-contract support
+
 # Documentation
 * [Usage Guide](doc/usage.md)
