@@ -14,3 +14,4 @@ is a fork from http://code.google.com/p/cmockery/.
 
 # Documentation
 * [Usage Guide](doc/usage.md)
+* [Coverage Support with Jenkins](doc/coverage.md)
