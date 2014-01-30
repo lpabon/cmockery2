@@ -9,7 +9,10 @@
 ACLOCAL_AMFLAGS = -I ./m4
 
 # This is so we can #include <cmockery/foo>
-AM_CPPFLAGS = -I$(top_srcdir)/src -Wall -Werror
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
+CFLAGS = -g -O0 -Wall -Werror --coverage
+AM_LDFLAGS = -lgcov
 
 cmockeryincludedir = $(includedir)/cmockery
 ## The .h files you want to install (that is, .h files that people
