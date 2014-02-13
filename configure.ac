@@ -13,6 +13,7 @@ AC_INIT(cmockery, 1.1, lpabon@redhat.com)
 # (for sanity checking)
 AC_CONFIG_SRCDIR(README.md)
 AM_INIT_AUTOMAKE
+AM_PROG_AR
 AM_CONFIG_HEADER(src/config.h)
 
 # Checks for programs.
