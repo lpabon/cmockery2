@@ -11,7 +11,7 @@ ACLOCAL_AMFLAGS = -I ./m4
 # This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src
 
-CFLAGS = -g -O0 -Wall -Werror --coverage
+AM_CFLAGS = -g -O0 -Wall -Werror --coverage
 AM_LDFLAGS = -lgcov
 
 cmockeryincludedir = $(includedir)/cmockery
@@ -129,6 +129,5 @@ libtool: $(LIBTOOL_DEPS)
 EXTRA_DIST = packages/rpm.sh packages/rpm/rpm.spec packages/deb.sh packages/deb \
 	libtool $(SCRIPTS)
 
-clean-generic:
-	rm -f *.gcda *.gcno
+CLEANFILES = *.gcda *.gcno
 

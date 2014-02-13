@@ -27,6 +27,7 @@ AC_SUBST(LIBTOOL_DEPS)
 
 # Check whether some low-level functions/files are available
 AC_HEADER_STDC
+AM_PROG_CC_C_O
 
 # Here are some examples of how to check for the existence of a fn or file
 ##AC_CHECK_FUNCS(memmove)
@@ -60,10 +61,6 @@ AC_CHECK_HEADERS(inttypes.h)
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(sys/time.h)
 AC_CHECK_TYPES([unsigned long long, uintmax_t])
-
-# Find out what namespace 'normal' STL code lives in, and also what namespace
-# the user wants our classes to be defined in
-AC_CXX_STL_NAMESPACE
 
 ## Check out ../autoconf/ for other macros you can call to do useful stuff
 

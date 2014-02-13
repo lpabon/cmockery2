@@ -1,5 +1,6 @@
 INSTALL
 aclocal.m4
+compile
 Makefile.in
 autom4te.cache/
 config.guess
