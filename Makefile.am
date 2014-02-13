@@ -129,5 +129,5 @@ libtool: $(LIBTOOL_DEPS)
 EXTRA_DIST = packages/rpm.sh packages/rpm/rpm.spec packages/deb.sh packages/deb \
 	libtool $(SCRIPTS)
 
-CLEANFILES = *.gcda *.gcno
+CLEANFILES = *.gcda *.gcno *_xunit.xml
 

@@ -9,6 +9,7 @@
 AC_PREREQ(2.57)
 
 AC_INIT(cmockery, 1.1, lpabon@redhat.com)
+AC_CONFIG_AUX_DIR([.])
 # The argument here is just something that should be in the current directory
 # (for sanity checking)
 AC_CONFIG_SRCDIR(README.md)
@@ -28,6 +29,8 @@ AC_SUBST(LIBTOOL_DEPS)
 
 # Check whether some low-level functions/files are available
 AC_HEADER_STDC
+
+# For older versions of automake
 AM_PROG_CC_C_O
 
 # Here are some examples of how to check for the existence of a fn or file
