@@ -10,8 +10,6 @@ ACLOCAL_AMFLAGS = -I ./m4
 
 # This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src
-
-AM_CFLAGS = -g -O0 -Wall -Werror --coverage
 AM_LDFLAGS = -lgcov
 
 cmockeryincludedir = $(includedir)/cmockery
