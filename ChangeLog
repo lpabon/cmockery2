@@ -1,3 +1,10 @@
+Wed Feb 18 10:30:00 2014 Luis Pabon, Jr. <lpabon@redhat.com>
+	* cmockery: version 1.2
+	* Many configure.ac fixes
+	* Added CFLAGS to output Gcov information
+	* Added Programming by contract
+	* Support to output Junit XML
+
 Wed Jan 22 16:44:14 2014 Luis Pabon, Jr. <lpabon@redhat.com>
 	* cmockery: version 0.9
 	* Added cmockery_override.h to be able to override standard tools
