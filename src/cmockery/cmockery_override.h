@@ -24,20 +24,25 @@
  * #endif
  *
  */
+#ifdef UNIT_TESTING
+
 #ifndef CMOCKERY_OVERRIDE_H_
 #define CMOCKERY_OVERRIDE_H_
-
-#if UNIT_TESTING
-
 /* Prototypes */
 extern void* _test_malloc(const size_t size, const char* file, const int line);
 extern void* _test_calloc(const size_t number_of_elements, const size_t size,
                           const char* file, const int line);
 extern void _test_free(void* const ptr, const char* file, const int line);
-extern void mock_assert(const int result, const char* const expression,
-                        const char * const file, const int line);
+
 extern void print_message(const char *format, ...);
 
+// Can be used to replace assert in tested code so that in conjuction with
+// check_assert() it's possible to determine whether an assert condition has
+// failed without stopping a test.
+extern void mock_assert(const int result, const char* const expression,
+                        const char * const file, const int line);
+
+#endif /* CMOCKERY_OVERRIDE_H_ */
 
 /* Reset any previous definitions */
 #ifdef assert
@@ -59,10 +64,14 @@ extern void print_message(const char *format, ...);
 /* Redirect to use test functions */
 #define assert(expression) \
     mock_assert((int)(expression), #expression, __FILE__, __LINE__);
-#define malloc(size) _test_malloc(size, __FILE__, __LINE__)
-#define calloc(num, size) _test_calloc(num, size, __FILE__, __LINE__)
-#define free(ptr) _test_free(ptr, __FILE__, __LINE__)
+
+// Redirect malloc, calloc and free to the unit test allocators.
+#define test_malloc(size) _test_malloc(size, __FILE__, __LINE__)
+#define test_calloc(num, size) _test_calloc(num, size, __FILE__, __LINE__)
+#define test_free(ptr) _test_free(ptr, __FILE__, __LINE__)
+#define malloc test_malloc
+#define calloc test_calloc
+#define free test_free
 
 
 #endif /* UNIT_TESTING */
-#endif /* CMOCKERY_OVERRIDE_H_ */

@@ -16,6 +16,8 @@
 #ifndef CMOCKERY_H_
 #define CMOCKERY_H_
 
+#include <cmockery/cmockery_override.h>
+
 // Windows
 #ifdef _WIN32
 #if _MSC_VER < 1500
@@ -359,13 +361,6 @@ __FILE__, __LINE__)
 #define test_calloc(num, size) _test_calloc(num, size, __FILE__, __LINE__)
 #define test_free(ptr) _test_free(ptr, __FILE__, __LINE__)
 
-// Redirect malloc, calloc and free to the unit test allocators.
-#if UNIT_TESTING
-#define malloc test_malloc
-#define calloc test_calloc
-#define free test_free
-#endif // UNIT_TESTING
-
 /*
  * Ensure mock_assert() is called.  If mock_assert() is called the assert
  * expression string is returned.
@@ -514,12 +509,6 @@ void _check_expected(
     const char * const function_name, const char * const parameter_name,
     const char* file, const int line, const uintmax_t value);
 
-// Can be used to replace assert in tested code so that in conjuction with
-// check_assert() it's possible to determine whether an assert condition has
-// failed without stopping a test.
-void mock_assert(const int result, const char* const expression,
-                 const char * const file, const int line);
-
 void _will_return(const char * const function_name, const char * const file,
                   const int line, const uintmax_t value,
                   const int count);
@@ -555,11 +544,6 @@ void _assert_not_in_set(
     const uintmax_t value, const uintmax_t values[],
     const size_t number_of_values, const char* const file, const int line);
 
-void* _test_malloc(const size_t size, const char* file, const int line);
-void* _test_calloc(const size_t number_of_elements, const size_t size,
-                   const char* file, const int line);
-void _test_free(void* const ptr, const char* file, const int line);
-
 void _fail(const char * const file, const int line);
 
 // test_suite_name is the prefix to the %s_xunit.xml report
@@ -568,7 +552,6 @@ int _run_tests(const UnitTest * const tests,
         const char *test_suite_name);
 
 // Standard output and error print methods.
-void print_message(const char* const format, ...);
 void print_error(const char* const format, ...);
 void vprint_message(const char* const format, va_list args);
 void vprint_error(const char* const format, va_list args);
