@@ -13,6 +13,8 @@ To enable [GNU Gcov][] support in your programs, you need to enable coverage sup
 CFLAGS += -O0 --coverage
 ```
 
+You then need to link with the Gcov library by adding `-lgcov` to your LDFLAGS.
+
 Once you have built your programs using the new flags, running the program will enable GNU Gcov to generate two files, one ending with `*.gcda` and another ending in `*.gcno`.  These files will be analyzed by `gcovr` to create the Corbertura XML files using the following command:
 
 ```
