@@ -17,7 +17,7 @@ AC_SUBST(CFLAGS)
 # (for sanity checking)
 AC_CONFIG_SRCDIR(README.md)
 AM_INIT_AUTOMAKE
-AM_PROG_AR
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AM_CONFIG_HEADER(src/config.h)
 
 # Checks for programs.
