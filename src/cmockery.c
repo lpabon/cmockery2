@@ -1480,6 +1480,46 @@ void _test_free(void* const ptr, const char* file, const int line) {
 #define free test_free
 
 
+// Implement realloc using _test_xalloc functions
+void * 
+_test_realloc(void* ptr, 
+        const size_t size, 
+        const char* file, 
+        const int line)
+{
+
+    if (NULL == ptr) {
+        return _test_malloc(size, file, line);
+    } else if ( 0 == size ) {
+        _test_free(ptr, file, line);
+        return NULL;
+    } else {
+        void *temp_ptr;
+        char *block = (char*)ptr;
+        size_t new_size;
+        MallocBlockInfo *block_info;
+        block_info = (MallocBlockInfo*)(block - (MALLOC_GUARD_SIZE +
+                                                sizeof(*block_info)));
+
+        temp_ptr = _test_malloc(size, file, line);
+        if (NULL == temp_ptr) {
+            return NULL;
+        }
+
+        // Get the min amount of memory size
+        if (block_info->size < size) {
+            new_size = block_info->size;
+        } else {
+            new_size = size;
+        }
+        memcpy(temp_ptr, ptr, new_size);
+
+        // Free previous memory
+        _test_free(ptr, file, line);
+        return temp_ptr;
+    }
+}
+
 // Crudely checkpoint the current heap state.
 static const ListNode* check_point_allocated_blocks() {
     return get_allocated_blocks_list()->prev;

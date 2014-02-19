@@ -32,6 +32,7 @@
 extern void* _test_malloc(const size_t size, const char* file, const int line);
 extern void* _test_calloc(const size_t number_of_elements, const size_t size,
                           const char* file, const int line);
+extern void* _test_realloc(void* ptr, const size_t size, const char* file, const int line);
 extern void _test_free(void* const ptr, const char* file, const int line);
 
 extern void print_message(const char *format, ...);
@@ -68,9 +69,11 @@ extern void mock_assert(const int result, const char* const expression,
 // Redirect malloc, calloc and free to the unit test allocators.
 #define test_malloc(size) _test_malloc(size, __FILE__, __LINE__)
 #define test_calloc(num, size) _test_calloc(num, size, __FILE__, __LINE__)
+#define test_realloc(ptr, size) _test_realloc(ptr, size, __FILE__, __LINE__)
 #define test_free(ptr) _test_free(ptr, __FILE__, __LINE__)
 #define malloc test_malloc
 #define calloc test_calloc
+#define realloc test_realloc
 #define free test_free
 
 

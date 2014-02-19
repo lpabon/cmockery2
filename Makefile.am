@@ -108,6 +108,12 @@ run_tests_SOURCES = src/example/run_tests.c
 run_tests_CFLAGS = $(unit_test_CFLAGS)
 run_tests_LDADD = libcmockery.la
 
+noinst_PROGRAMS += realloc_test
+TESTS += realloc_test
+realloc_test_SOURCES = src/example/realloc_test.c
+realloc_test_CFLAGS = $(unit_test_CFLAGS)
+realloc_test_LDADD = libcmockery.la
+
 ## ^^^^ END OF RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
 
 
