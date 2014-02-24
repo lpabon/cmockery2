@@ -85,6 +85,14 @@ customer_database_test_SOURCES = src/example/customer_database_test.c \
 customer_database_test_CFLAGS = $(unit_test_CFLAGS)
 customer_database_test_LDADD = libcmockery.la
 
+noinst_PROGRAMS += hash_test
+TESTS += hash_test
+hash_test_SOURCES = src/example/hash.c \
+                                 src/example/hash_test.c \
+                                 src/example/hash.h
+hash_test_CFLAGS = $(unit_test_CFLAGS)
+hash_test_LDADD = libcmockery.la
+
 noinst_PROGRAMS += key_value_test
 TESTS += key_value_test
 key_value_test_SOURCES = src/example/key_value_test.c \
