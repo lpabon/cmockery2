@@ -1591,7 +1591,7 @@ void _fail(const char * const file, const int line) {
 
 #ifndef _WIN32
 static void exception_handler(int sig) {
-#ifdef _HPUX
+#if defined(_HPUX) || !defined(HAVE_STRSIGNAL)
     print_error("%d\n", sig);
 #else
     print_error("%s\n", strsignal(sig));
