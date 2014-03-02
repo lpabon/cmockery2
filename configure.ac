@@ -25,6 +25,7 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
 AM_CONDITIONAL(GCC, test "$GCC" = yes)   # let the Makefile know if we're gcc
+AC_GNU_SOURCE
 
 # Uncomment this if you'll be exporting libraries (.so's)
 AC_PROG_LIBTOOL
