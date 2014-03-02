@@ -17,6 +17,7 @@ AC_SUBST(CFLAGS)
 # (for sanity checking)
 AC_CONFIG_SRCDIR(README.md)
 AM_INIT_AUTOMAKE
+AC_GNU_SOURCE
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AM_CONFIG_HEADER(src/config.h)
 
@@ -25,7 +26,6 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
 AM_CONDITIONAL(GCC, test "$GCC" = yes)   # let the Makefile know if we're gcc
-AC_GNU_SOURCE
 
 # Uncomment this if you'll be exporting libraries (.so's)
 AC_PROG_LIBTOOL
