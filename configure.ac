@@ -19,7 +19,7 @@ AC_CONFIG_SRCDIR(README.md)
 AM_INIT_AUTOMAKE
 AC_GNU_SOURCE
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
-AM_CONFIG_HEADER(src/config.h)
+AM_CONFIG_HEADER(src/cmockery/config.h)
 
 # Checks for programs.
 AC_PROG_CC
