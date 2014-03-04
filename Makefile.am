@@ -41,7 +41,7 @@ noinst_SCRIPTS =
 ## vvvv RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
 
 lib_LTLIBRARIES += libcmockery.la
-libcmockery_la_SOURCES = src/config.h\
+libcmockery_la_SOURCES = src/cmockery/config.h\
 						 src/cmockery.c\
 						 src/cmockery/cmockery_override.h\
 						 src/cmockery/cmockery.h\
@@ -49,7 +49,7 @@ libcmockery_la_SOURCES = src/config.h\
 libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery
 
 noinst_PROGRAMS = calculator
-calculator_SOURCES = src/example/calculator.c src/config.h
+calculator_SOURCES = src/example/calculator.c src/cmockery/config.h
 calculator_CFLAGS =
 
 unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
