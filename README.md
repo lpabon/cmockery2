@@ -15,3 +15,6 @@ is a fork from http://code.google.com/p/cmockery/.
 # Documentation
 * [Usage Guide](doc/usage.md)
 * [Coverage Support with Jenkins](doc/coverage.md)
+
+# Presentations
+* [Test Methodologies in C](http://slides-lpabon.rhcloud.com/feb24_glusterfs_unittest.html)

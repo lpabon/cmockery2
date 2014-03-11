@@ -7,6 +7,7 @@
 
 # Make sure that when we re-make ./configure, we get the macros we need
 ACLOCAL_AMFLAGS = -I ./m4
+AUTOMAKE_OPTIONS = subdir-objects
 
 # This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/cmockery
