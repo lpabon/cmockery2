@@ -23,7 +23,7 @@ docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
 ## This is for HTML and other documentation you want to install.
 ## Add your documentation files (in doc/) in addition to these
 ## top-level boilerplate files.  Also add a TODO file if you have one.
-dist_doc_DATA = AUTHORS COPYING ChangeLog INSTALL NEWS README.md doc/index.html \
+nodist_doc_DATA = AUTHORS COPYING ChangeLog INSTALL NEWS doc/index.html \
 		windows/makefile doc/usage.md
 
 ## The libraries (.so's) you want to install
@@ -49,7 +49,7 @@ libcmockery_la_SOURCES = src/cmockery/config.h\
 libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery
 
 noinst_PROGRAMS = calculator
-calculator_SOURCES = src/example/calculator.c src/cmockery/config.h
+nodist_calculator_SOURCES = src/example/calculator.c src/cmockery/config.h
 calculator_CFLAGS =
 
 unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
@@ -57,29 +57,29 @@ unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
 
 noinst_PROGRAMS += calculator_test
 TESTS += calculator_test
-calculator_test_SOURCES = src/example/calculator_test.c \
-                          $(calculator_SOURCES)
+nodist_calculator_test_SOURCES = src/example/calculator_test.c \
+                          $(nodist_calculator_SOURCES)
 calculator_test_CFLAGS = $(unit_test_CFLAGS)
 calculator_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += allocate_module_test
 # Don't add this one, it returns a fail exit status,
 # which is expected. TESTS += allocate_module_test
-allocate_module_test_SOURCES = src/example/allocate_module_test.c \
+nodist_allocate_module_test_SOURCES = src/example/allocate_module_test.c \
                                src/example/allocate_module.c
 allocate_module_test_CFLAGS = $(unit_test_CFLAGS)
 allocate_module_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += assert_macro_test
 TESTS += assert_macro_test
-assert_macro_test_SOURCES = src/example/assert_macro_test.c \
+nodist_assert_macro_test_SOURCES = src/example/assert_macro_test.c \
                             src/example/assert_macro.c
 assert_macro_test_CFLAGS = $(unit_test_CFLAGS)
 assert_macro_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += customer_database_test
 TESTS += customer_database_test
-customer_database_test_SOURCES = src/example/customer_database_test.c \
+nodist_customer_database_test_SOURCES = src/example/customer_database_test.c \
                                  src/example/customer_database.c \
                                  src/example/database.h
 customer_database_test_CFLAGS = $(unit_test_CFLAGS)
@@ -87,7 +87,7 @@ customer_database_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += key_value_test
 TESTS += key_value_test
-key_value_test_SOURCES = src/example/key_value_test.c \
+nodist_key_value_test_SOURCES = src/example/key_value_test.c \
 			 src/example/key_value.h \
                          src/example/key_value.c
 key_value_test_CFLAGS = $(unit_test_CFLAGS)
@@ -96,7 +96,7 @@ key_value_test_LDADD = libcmockery.la
 noinst_PROGRAMS += product_database_test
 TESTS += product_database_test
 product_database_testdir = src/example
-product_database_test_SOURCES = src/example/product_database_test.c \
+nodist_product_database_test_SOURCES = src/example/product_database_test.c \
                                 src/example/product_database.c \
                                 src/example/database.h
 product_database_test_CFLAGS = $(unit_test_CFLAGS)
@@ -104,13 +104,13 @@ product_database_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += run_tests
 TESTS += run_tests
-run_tests_SOURCES = src/example/run_tests.c
+nodist_run_tests_SOURCES = src/example/run_tests.c
 run_tests_CFLAGS = $(unit_test_CFLAGS)
 run_tests_LDADD = libcmockery.la
 
 noinst_PROGRAMS += realloc_test
 TESTS += realloc_test
-realloc_test_SOURCES = src/example/realloc_test.c
+nodist_realloc_test_SOURCES = src/example/realloc_test.c
 realloc_test_CFLAGS = $(unit_test_CFLAGS)
 realloc_test_LDADD = libcmockery.la
 
@@ -130,7 +130,9 @@ deb: dist-gzip packages/deb.sh packages/deb/*
 ## If you're using libtool, add 'libtool' here.  Also add this rule:
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
-EXTRA_DIST = autogen.sh $(SCRIPTS)
+EXTRA_DIST = autogen.sh README.md $(SCRIPTS)
 
 CLEANFILES = *.gcda *.gcno *_xunit.xml
 
+dist-hook:
+	cp $(top_srcdir)/Makefile.am.dist $(top_distdir)/Makefile.am
