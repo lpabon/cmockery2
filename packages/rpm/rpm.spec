@@ -1,76 +1,125 @@
-## This is a boilerplate file for Google opensource projects.
-## To make it useful, replace <<TEXT>> with actual text for your project.
-## Also, look at comments with "## double hashes" to see if any are worth
-## uncommenting or modifying.
-
-%define	RELEASE	1
-%define rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
-%define	prefix	/usr
-
-Name: %NAME
-Summary: Lightweight C unit testing framework.
-Version: %VERSION
-Release: %rel
-Group: Development/Libraries
-URL: http://code.google.com/p/cmockery
-License: Apache
-Vendor: Google
-Packager: Google Inc. <opensource@google.com>
-Source: http://%{NAME}.googlecode.com/files/%{NAME}-%{VERSION}.tar.gz
-Distribution: Redhat 7 and above.
-Buildroot: %{_tmppath}/%{name}-root
-Prefix: %prefix
+%global _for_fedora_koji_builds 0
+Name:           cmockery2
+Summary:        Lightweight C unit testing framework.
+Version:        1.3.3
+Release:        1%{?dist}
+Group:          Development/Tools
+URL:            https://github.com/lpabon/%{name}
+License:        ASL 2.0
+%if ( 0%{_for_fedora_koji_builds} )
+Source0:        https://github.com/lpabon/%{name}/archive/%{version}.tar.gz
+%else
+Source0:        %{name}-%{version}.tar.gz
+%endif
+Buildroot:      %{_tmppath}/%{name}-root
+BuildRequires:    gcc make automake libtool
 
 %description
-The %name package contains a lightweight library to simplify and generalize the
-process of writing unit tests for C applications.
+Cmockery tests are compiled into stand-alone executables and linked
+with the Cmockery library, the standard C library and module being
+tested. Any symbols external to the module being tested should be
+mocked - replaced with functions that return values determined by
+the test - within the test application. Even though significant
+differences may exist between the target execution environment of a
+code module and the environment used to test the code the unit
+testing is still valid since its goal is to test the logic of a
+code modules at a functional level and not necessarily all of its
+interactions with the target execution environment.
+
+Other features:
+* Lightweight C Unit test with mocking support
+* JUnit XML report output which can be used with Jenkins
+* Provides design-by-contract support
+
+This project is a successor of http://code.google.com/p/cmockery-staging/
+which is a successor of Google's http://code.google.com/p/cmockery/.
 
 %package devel
-Summary: Lightweight C unit testing framework.
-Group: Development/Libraries
-Requires: %{NAME} = %{VERSION}
+Summary:        Lightweight C unit testing framework.
+Group:          Development/Tools
+Requires:       %{name} = %{version}-%{release}
 
 %description devel
-The %name package contains static and debug libraries and header files for the
-development of test applications using %name.
+Cmockery tests are compiled into stand-alone executables and linked
+with the Cmockery library, the standard C library and module being
+tested. Any symbols external to the module being tested should be
+mocked - replaced with functions that return values determined by
+the test - within the test application. Even though significant
+differences may exist between the target execution environment of a
+code module and the environment used to test the code the unit
+testing is still valid since its goal is to test the logic of a
+code modules at a functional level and not necessarily all of its
+interactions with the target execution environment.
 
-%changelog
-    * Mon Aug 25 2008 <opensource@google.com>
-    - First draft
+Other features:
+* Lightweight C Unit test with mocking support
+* JUnit XML report output which can be used with Jenkins
+* Provides design-by-contract support
+
+This project is a successor of http://code.google.com/p/cmockery-staging/
+which is a successor of Google's http://code.google.com/p/cmockery/.
+
+Package provides necessary headers for C unit test development
+
+%package static
+Summary:        Lightweight C unit testing framework.
+Group:          Development/Tools
+Requires:       %{name}-devel = %{version}-%{release}
+
+%description static
+Cmockery tests are compiled into stand-alone executables and linked
+with the Cmockery library, the standard C library and module being
+tested. Any symbols external to the module being tested should be
+mocked - replaced with functions that return values determined by
+the test - within the test application. Even though significant
+differences may exist between the target execution environment of a
+code module and the environment used to test the code the unit
+testing is still valid since its goal is to test the logic of a
+code modules at a functional level and not necessarily all of its
+interactions with the target execution environment.
+
+Other features:
+* Lightweight C Unit test with mocking support
+* JUnit XML report output which can be used with Jenkins
+* Provides design-by-contract support
+
+This project is a successor of http://code.google.com/p/cmockery-staging/
+which is a successor of Google's http://code.google.com/p/cmockery/.
+
+This package provides a static C library
 
 %prep
-%setup
+%setup -q
 
 %build
-./configure
-make prefix=%prefix
+./autogen.sh
+%configure
+make
+
+%check
+make check
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+rm -rf %{buildroot}
+%make_install
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
-
-## Mark all installed files within /usr/share/doc/{package name} as
-## documentation.  This depends on the following two lines appearing in
-## Makefile.am:
-##     docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
-##     dist_doc_DATA = AUTHORS COPYING ChangeLog INSTALL NEWS README.md
-%docdir %{prefix}/share/doc/%{NAME}-%{VERSION}
-%{prefix}/share/doc/%{NAME}-%{VERSION}/*
-
-%{prefix}/lib/libcmockery.so.0
-%{prefix}/lib/libcmockery.so.0.0.0
-
+%doc AUTHORS README README.md ChangeLog COPYING
+%{_libdir}/libcmockery.so*
 
 %files devel
-%defattr(-,root,root)
+%{_includedir}/cmockery*
+%{_prefix}/share/doc/cmockery*
+%{_libdir}/libcmockery.la
 
-%{prefix}/include/google
-%{prefix}/lib/libcmockery.a
-%{prefix}/lib/libcmockery.la
-%{prefix}/lib/libcmockery.so
+%files static
+%{_libdir}/libcmockery.a
+
+%changelog
+* Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com>
+- Version v1.3.3
+- Initial Fedora release
+
