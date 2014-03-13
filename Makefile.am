@@ -6,8 +6,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # Make sure that when we re-make ./configure, we get the macros we need
-ACLOCAL_AMFLAGS = -I ./m4
-AUTOMAKE_OPTIONS = subdir-objects
+ACLOCAL_AMFLAGS = -I m4
 
 # This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/cmockery
@@ -131,8 +130,7 @@ deb: dist-gzip packages/deb.sh packages/deb/*
 ## If you're using libtool, add 'libtool' here.  Also add this rule:
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
-EXTRA_DIST = packages/rpm.sh packages/rpm/rpm.spec packages/deb.sh packages/deb \
-	autogen.sh libtool m4 $(SCRIPTS)
+EXTRA_DIST = autogen.sh $(SCRIPTS)
 
 CLEANFILES = *.gcda *.gcno *_xunit.xml
 

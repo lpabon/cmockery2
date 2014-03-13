@@ -12,7 +12,11 @@
 # Here's a command you can run to see what files aclocal will import:
 #  aclocal -I ../autoconf --output=- | sed -n 's/^m4_include..\([^]]*\).*/\1/p'
 
-rm -rf autom4te.cache
+rm -rf autom4te.cache > /dev/null 2>&1
+rm -f m4/libtool.m4 m4/lt*.m4 > /dev/null 2>&1
+if [ ! -d m4 ] ; then
+    mkdir m4
+fi
 
 trap 'rm -f aclocal.m4.tmp' EXIT
 
