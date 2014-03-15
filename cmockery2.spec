@@ -120,6 +120,6 @@ rm -rf %{buildroot}
 
 %changelog
 * Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com>
-- Version v1.3.3
+- Version v1.3.4
 - Initial Fedora release
 

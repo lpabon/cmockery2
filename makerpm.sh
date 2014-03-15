@@ -90,4 +90,3 @@ SRCTAR=${RPMBUILDDIR}/${SRCNAME}.tar.gz
 prep
 create_src
 create_rpm
-cleanup
