@@ -65,7 +65,7 @@ char temporary_buffer[256];
 int example_test_fprintf(FILE* const file, const char *format, ...) {
 	int return_value;
 	va_list args;
-	assert_true(file == stderr);
+	assert_ptr_equal(file, stderr);
 	va_start(args, format);
 	return_value = vsnprintf(temporary_buffer, sizeof(temporary_buffer),
 	                         format, args);

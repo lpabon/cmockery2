@@ -69,7 +69,7 @@ AC_CHECK_HEADERS(signal.h)
 AC_CHECK_HEADERS(inttypes.h)
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(sys/time.h)
-AC_CHECK_TYPES([unsigned long long, uintmax_t])
+AC_CHECK_TYPES([unsigned long long, uintmax_t, uintptr_t])
 
 ## Check out ../autoconf/ for other macros you can call to do useful stuff
 

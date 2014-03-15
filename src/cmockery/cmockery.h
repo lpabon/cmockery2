@@ -96,7 +96,7 @@ int __stdcall IsDebuggerPresent();
 
 // Perform an unsigned cast to uintmax_t.
 #define cast_to_largest_integral_type(value) \
-    ((uintmax_t)(value))
+    ((uintmax_t)((size_t)(value)))
 
 /* Smallest integral type capable of holding a pointer. */
 #ifndef _UINTPTR_T
@@ -105,16 +105,6 @@ int __stdcall IsDebuggerPresent();
 
 /* WIN32 is an ILP32 platform */
 typedef unsigned long uintptr_t;
-
-#else /* _WIN32 */
-
-/* what about 64-bit windows?
- * what's the right preprocessor symbol?
-typedef unsigned long long uintptr_t */
-
-/* ILP32 and LP64 platforms */
-typedef unsigned long uintptr_t;
-
 #endif /* _WIN32 */
 #endif /* _UINTPTR_T */
 
@@ -263,6 +253,17 @@ __FILE__, __LINE__)
 // Assert that the given pointer is NULL.
 #define assert_null(c) _assert_true(!(cast_ptr_to_largest_integral_type(c)), #c, \
 __FILE__, __LINE__)
+
+// Assert two given pointers are equal
+#define assert_ptr_equal(a, b) \
+    _assert_int_equal(cast_ptr_to_largest_integral_type(a), \
+                      cast_ptr_to_largest_integral_type(b), \
+                      __FILE__, __LINE__)
+// Assert that the two given integers are not equal, otherwise fail.
+#define assert_ptr_not_equal(a, b) \
+    _assert_int_not_equal(cast_ptr_to_largest_integral_type(a), \
+                          cast_ptr_to_largest_integral_type(b), \
+                          __FILE__, __LINE__)
 
 // Assert that the two given integers are equal, otherwise fail.
 #define assert_int_equal(a, b) \
