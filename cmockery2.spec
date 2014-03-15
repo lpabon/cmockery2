@@ -1,7 +1,7 @@
 %global _for_fedora_koji_builds 0
 Name:           cmockery2
 Summary:        Lightweight C unit testing framework.
-Version:        1.3.3
+Version:        1.3.4
 Release:        1%{?dist}
 Group:          Development/Tools
 URL:            https://github.com/lpabon/%{name}
