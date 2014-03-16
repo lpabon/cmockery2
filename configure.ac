@@ -19,7 +19,7 @@ AC_CONFIG_SRCDIR(README.md)
 AM_INIT_AUTOMAKE
 AC_GNU_SOURCE
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
-AM_CONFIG_HEADER(src/cmockery/config.h)
+AC_CONFIG_HEADERS(src/cmockery/config.h)
 
 # Checks for programs.
 AC_PROG_CC
@@ -28,6 +28,8 @@ AC_PROG_CXX
 AM_CONDITIONAL(GCC, test "$GCC" = yes)   # let the Makefile know if we're gcc
 
 # Uncomment this if you'll be exporting libraries (.so's)
+# Use AC_PROG_LIBTOOL instead of LT_INIT because
+# we need it to support EL5
 AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 

@@ -1,22 +1,22 @@
 %global _for_fedora_koji_builds 0
 Name:           cmockery2
-Summary:        Lightweight C unit testing framework.
+Summary:        Lightweight C unit testing framework
 Version:        1.3.4
 Release:        1%{?dist}
 Group:          Development/Tools
 URL:            https://github.com/lpabon/%{name}
 License:        ASL 2.0
 %if ( 0%{_for_fedora_koji_builds} )
-Source0:        https://github.com/lpabon/%{name}/archive/%{version}.tar.gz
+Source0:        https://github.com/lpabon/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 %else
 Source0:        %{name}-%{version}.tar.gz
 %endif
-Buildroot:      %{_tmppath}/%{name}-root
-BuildRequires:    gcc make automake libtool
+Buildroot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildRequires:    automake libtool
 
 %description
-Cmockery tests are compiled into stand-alone executables and linked
-with the Cmockery library, the standard C library and module being
+Cmockery tests are compiled into a stand-alone executable and linked
+with the cmockery library, the standard C library and module being
 tested. Any symbols external to the module being tested should be
 mocked - replaced with functions that return values determined by
 the test - within the test application. Even though significant
@@ -35,12 +35,12 @@ This project is a successor of http://code.google.com/p/cmockery-staging/
 which is a successor of Google's http://code.google.com/p/cmockery/.
 
 %package devel
-Summary:        Lightweight C unit testing framework.
+Summary:        Lightweight C unit testing framework
 Group:          Development/Tools
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description devel
-Cmockery tests are compiled into stand-alone executables and linked
+Cmockery tests are compiled into a stand-alone executable and linked
 with the Cmockery library, the standard C library and module being
 tested. Any symbols external to the module being tested should be
 mocked - replaced with functions that return values determined by
@@ -62,12 +62,12 @@ which is a successor of Google's http://code.google.com/p/cmockery/.
 Package provides necessary headers for C unit test development
 
 %package static
-Summary:        Lightweight C unit testing framework.
+Summary:        Lightweight C unit testing framework
 Group:          Development/Tools
-Requires:       %{name}-devel = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description static
-Cmockery tests are compiled into stand-alone executables and linked
+Cmockery tests are compiled into a stand-alone executable and linked
 with the Cmockery library, the standard C library and module being
 tested. Any symbols external to the module being tested should be
 mocked - replaced with functions that return values determined by
@@ -100,26 +100,29 @@ make
 make check
 
 %install
-rm -rf %{buildroot}
+%{__rm} -rf %{buildroot}
 %make_install
 
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
 %clean
-rm -rf %{buildroot}
+%{__rm} -rf %{buildroot}
 
 %files
-%doc AUTHORS README README.md ChangeLog COPYING
-%{_libdir}/libcmockery.so*
+%{_prefix}/share/doc/cmockery*
+%{_libdir}/libcmockery.so.*
 
 %files devel
 %{_includedir}/cmockery*
-%{_prefix}/share/doc/cmockery*
-%{_libdir}/libcmockery.la
+%{_libdir}/libcmockery.so
 
 %files static
 %{_libdir}/libcmockery.a
+%exclude %{_libdir}/libcmockery.la
 
 %changelog
-* Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com>
-- Version v1.3.4
+* Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com> - 1.3.4-1
 - Initial Fedora release
 
