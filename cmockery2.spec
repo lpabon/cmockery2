@@ -3,7 +3,7 @@ Name:           cmockery2
 Summary:        Lightweight C unit testing framework
 Version:        1.3.4
 Release:        1%{?dist}
-Group:          Development/Tools
+Group:          System Environment/Libraries
 URL:            https://github.com/lpabon/%{name}
 License:        ASL 2.0
 %if ( 0%{_for_fedora_koji_builds} )
@@ -36,7 +36,7 @@ which is a successor of Google's http://code.google.com/p/cmockery/.
 
 %package devel
 Summary:        Lightweight C unit testing framework
-Group:          Development/Tools
+Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description devel
