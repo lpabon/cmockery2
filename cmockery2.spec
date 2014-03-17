@@ -111,7 +111,7 @@ make check
 %{__rm} -rf %{buildroot}
 
 %files
-%{_prefix}/share/doc/cmockery*
+%{_docdir}/cmockery*
 %{_libdir}/libcmockery.so.*
 
 %files devel
