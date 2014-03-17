@@ -37,7 +37,7 @@ extern void _test_free(void* const ptr, const char* file, const int line);
 
 extern void print_message(const char *format, ...);
 
-// Can be used to replace assert in tested code so that in conjuction with
+// Can be used to replace assert in tested code so that in conjunction with
 // check_assert() it's possible to determine whether an assert condition has
 // failed without stopping a test.
 extern void mock_assert(const int result, const char* const expression,
