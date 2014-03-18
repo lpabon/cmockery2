@@ -18,7 +18,7 @@
  * Programming by Contract is a programming methodology
  * which binds the caller and the function called to a
  * contract. The contract is represented using Hoare Triple:
- *      {P} C {Q} 
+ *      {P} C {Q}
  * where {P} is the precondition before executing command C,
  * and {Q} is the postcondition.
  *
@@ -35,7 +35,7 @@
 #include <assert.h>
 
 /*
- * Checks caller responsability against contract
+ * Checks caller responsibility against contract
  */
 #define REQUIRE(cond) assert(cond)
 
@@ -47,7 +47,7 @@
 /*
  * While REQUIRE and ENSURE apply to functions, INVARIANT
  * applies to classes/structs.  It ensures that intances
- * of the class/struct are consistant. In other words,
+ * of the class/struct are consistent. In other words,
  * that the instance has not been corrupted.
  */
 #define INVARIANT(invariant_fnc) do{ (invariant_fnc) } while (0);

@@ -301,7 +301,7 @@ __FILE__, __LINE__)
         cast_to_largest_integral_type(minimum), \
         cast_to_largest_integral_type(maximum), __FILE__, __LINE__)
 
-// Assert that the specified value is < minumum or > maximum
+// Assert that the specified value is < minimum or > maximum
 #define assert_not_in_range(value, minimum, maximum) \
     _assert_not_in_range( \
         cast_to_largest_integral_type(value), \
