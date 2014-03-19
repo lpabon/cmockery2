@@ -1,4 +1,3 @@
-%global _for_fedora_koji_builds 0
 Name:           cmockery2
 Summary:        Lightweight C unit testing framework
 Version:        1.3.4
@@ -6,11 +5,7 @@ Release:        1%{?dist}
 Group:          System Environment/Libraries
 URL:            https://github.com/lpabon/%{name}
 License:        ASL 2.0
-%if ( 0%{_for_fedora_koji_builds} )
 Source0:        https://github.com/lpabon/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
-%else
-Source0:        %{name}-%{version}.tar.gz
-%endif
 Buildroot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires:    automake libtool
 
@@ -69,12 +64,12 @@ Package provides necessary headers for C unit test development
 %configure
 make %{?_smp_mflags}
 
-%check
-make check
-
 %install
 %{__rm} -rf %{buildroot}
 %make_install
+
+%check
+make check
 
 %post -p /sbin/ldconfig
 

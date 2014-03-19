@@ -52,7 +52,8 @@ nodist_calculator_SOURCES = src/example/calculator.c src/cmockery/config.h
 calculator_CFLAGS =
 
 unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
-                   -I$(top_srcdir)/src/example -DUNIT_TESTING=1
+                   -I$(top_srcdir)/src/example -DUNIT_TESTING=1 \
+                   -Wall -Werror --coverage
 
 noinst_PROGRAMS += calculator_test
 TESTS += calculator_test

@@ -10,8 +10,6 @@ AC_PREREQ(2.57)
 
 AC_INIT(cmockery2, 1.3.4, lpabon@redhat.com)
 AC_CONFIG_AUX_DIR([.])
-CFLAGS="-g -O0 -Wall -Werror --coverage"
-AC_SUBST(CFLAGS)
 
 # The argument here is just something that should be in the current directory
 # (for sanity checking)
