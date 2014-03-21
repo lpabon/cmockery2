@@ -66,7 +66,12 @@ make %{?_smp_mflags}
 
 %install
 %{__rm} -rf %{buildroot}
+%if ( 0%{?rhel} && 0%{?rhel} < 6 )
+#EL5 does not have the make_install macro
+make install DESTDIR=%{buildroot}
+%else
 %make_install
+%endif
 
 %check
 make check
