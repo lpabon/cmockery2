@@ -1,6 +1,6 @@
 Name:           cmockery2
 Summary:        Lightweight C unit testing framework
-Version:        1.3.4
+Version:        1.3.5
 Release:        1%{?dist}
 Group:          System Environment/Libraries
 URL:            https://github.com/lpabon/%{name}
