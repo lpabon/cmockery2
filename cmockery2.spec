@@ -89,6 +89,9 @@ make check
 %exclude %{_libdir}/libcmockery.la
 
 %changelog
+* Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com> - 1.3.5-1
+- PPC fixes
+
 * Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com> - 1.3.4-1
 - Initial Fedora release
 
