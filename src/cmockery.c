@@ -1103,7 +1103,11 @@ void _expect_not_value(
 static int check_string(const uintmax_t value,
                         const uintmax_t check_value_data) {
     return string_equal_display_error(
+#ifdef __ppc__
+        (char *)((uintptr_t)value),
+#else
         cast_largest_integral_type_to_pointer(char*, value),
+#endif
         cast_largest_integral_type_to_pointer(char*, check_value_data));
 }
 
@@ -1124,7 +1128,11 @@ void _expect_string(
 static int check_not_string(const uintmax_t value,
                             const uintmax_t check_value_data) {
     return string_not_equal_display_error(
+#ifdef __ppc__
+        (char *)((uintptr_t)value),
+#else
         cast_largest_integral_type_to_pointer(char*, value),
+#endif
         cast_largest_integral_type_to_pointer(char*, check_value_data));
 }
 
@@ -1147,7 +1155,11 @@ static int check_memory(const uintmax_t value,
         CheckMemoryData*, check_value_data);
     assert_non_null(check);
     return memory_equal_display_error(
-        cast_largest_integral_type_to_pointer(const char*, value),
+#ifdef __ppc__
+        (const char *)((uintptr_t)value),
+#else
+        cast_largest_integral_type_to_pointer(char*, value),
+#endif
         (const char*)check->memory, check->size);
 }
 
@@ -1191,7 +1203,11 @@ static int check_not_memory(const uintmax_t value,
         CheckMemoryData*, check_value_data);
     assert_non_null(check);
     return memory_not_equal_display_error(
-        cast_largest_integral_type_to_pointer(const char*, value),
+#ifdef __ppc__
+        (const char *)((uintptr_t)value),
+#else
+        cast_largest_integral_type_to_pointer(char*, value),
+#endif
 	(const char*)check->memory,
         check->size);
 }
