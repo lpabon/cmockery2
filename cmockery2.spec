@@ -1,6 +1,6 @@
 Name:           cmockery2
 Summary:        Lightweight C unit testing framework
-Version:        1.3.5
+Version:        1.3.6
 Release:        1%{?dist}
 Group:          System Environment/Libraries
 URL:            https://github.com/lpabon/%{name}
@@ -94,7 +94,7 @@ make check
 %exclude %{_libdir}/libcmockery.la
 
 %changelog
-* Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com> - 1.3.5-1
+* Thu Mar 21 2014 Luis Pabon, Jr. <lpabon@redhat.com> - 1.3.6-1
 - PPC fixes
 
 * Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com> - 1.3.4-1

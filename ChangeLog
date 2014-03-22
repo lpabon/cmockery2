@@ -1,6 +1,7 @@
 Thu Mar 21 2014 Luis Pabon, Jr. <lpabon@redhat.com>
-	* Version v1.3.5
+	* Version v1.3.6
 	* Travis and RPM changes
+	* PPC Support
 
 Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com>
 	* Version v1.3.4
