@@ -67,5 +67,5 @@ int main(void) {
         unit_test(realloc_tests),
     };
 
-    return run_tests(tests, "run");
+    return run_tests(tests, "realloc");
 }

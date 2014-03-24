@@ -1,3 +1,8 @@
+Mon Mar 21 2014 Luis Pabon, Jr. <lpabon@redhat.com>
+	* Version v1.3.7
+	* Fixed memory check functions
+	* Added new memory unit test
+
 Thu Mar 21 2014 Luis Pabon, Jr. <lpabon@redhat.com>
 	* Version v1.3.6
 	* Travis and RPM changes

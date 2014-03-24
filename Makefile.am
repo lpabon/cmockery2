@@ -45,7 +45,7 @@ libcmockery_la_SOURCES = src/cmockery/config.h\
 						 src/cmockery/cmockery_override.h\
 						 src/cmockery/cmockery.h\
 						 src/cmockery/pbc.h
-libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery
+libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery -Wall -Werror --coverage -DUNIT_TESTING=1
 
 noinst_PROGRAMS = calculator
 nodist_calculator_SOURCES = src/example/calculator.c src/cmockery/config.h
@@ -113,6 +113,12 @@ TESTS += realloc_test
 nodist_realloc_test_SOURCES = src/example/realloc_test.c
 realloc_test_CFLAGS = $(unit_test_CFLAGS)
 realloc_test_LDADD = libcmockery.la
+
+noinst_PROGRAMS += mem_test
+TESTS += mem_test
+nodist_mem_test_SOURCES = src/example/mem_test.c
+mem_test_CFLAGS = $(unit_test_CFLAGS)
+mem_test_LDADD = libcmockery.la
 
 ## ^^^^ END OF RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
 
