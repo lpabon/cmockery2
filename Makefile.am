@@ -10,7 +10,6 @@ ACLOCAL_AMFLAGS = -I m4
 
 # This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/cmockery
-AM_LDFLAGS = -lgcov
 
 cmockeryincludedir = $(includedir)/cmockery
 ## The .h files you want to install (that is, .h files that people
@@ -45,7 +44,8 @@ libcmockery_la_SOURCES = src/cmockery/config.h\
 						 src/cmockery/cmockery_override.h\
 						 src/cmockery/cmockery.h\
 						 src/cmockery/pbc.h
-libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery -Wall -Werror --coverage -DUNIT_TESTING=1
+libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery -Wall -Werror  \
+                        -DUNIT_TESTING=1
 
 noinst_PROGRAMS = calculator
 nodist_calculator_SOURCES = src/example/calculator.c src/cmockery/config.h
@@ -53,7 +53,7 @@ calculator_CFLAGS =
 
 unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
                    -I$(top_srcdir)/src/example -DUNIT_TESTING=1 \
-                   -Wall -Werror --coverage
+                   -Wall -Werror
 
 noinst_PROGRAMS += calculator_test
 TESTS += calculator_test

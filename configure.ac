@@ -23,7 +23,65 @@ AC_CONFIG_HEADERS(src/cmockery/config.h)
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
+
+# Check if CC is linked to CLANG
+AC_MSG_CHECKING([if compiling with clang])
+AC_COMPILE_IFELSE(
+[AC_LANG_PROGRAM([], [[
+#ifndef __clang__
+       not clang
+#endif
+]])],
+[CLANG=yes GCC=no], [CLANG=no GCC=yes])
+AC_MSG_RESULT([$CLANG])
+AM_CONDITIONAL(CLANG, test "$CLANG" = yes)
+
 AM_CONDITIONAL(GCC, test "$GCC" = yes)   # let the Makefile know if we're gcc
+
+echo "================================================================================"
+echo $CFLAGS
+echo "================================================================================"
+
+OLD_CFLAGS=$CFLAGS
+CFLAGS=
+
+echo "================================================================================"
+echo $CFLAGS
+echo "================================================================================"
+
+# Enable gcov suport.
+AC_ARG_ENABLE([gcov],
+AC_HELP_STRING([--enable-gcov],
+[build binaries with gcov support]), [use_gcov=yes], [use_gcov=no])
+if test "$use_gcov" = yes; then
+  if test "$CLANG" = yes; then
+    CFLAGS="$CFLAGS -fprofile-arcs -ftest-coverage"
+    LDFLAGS="$LDFLAGS -fprofile-arcs"
+  else
+    CFLAGS="$CFLAGS --coverage"
+  fi
+fi
+AM_CONDITIONAL(GCOV, test "$use_gcov" = yes)
+
+# Enable gprof suport.
+AC_ARG_ENABLE([gprof],
+AC_HELP_STRING([--enable-gprof],
+[build binaries with gprof support]), [use_gprof=yes], [use_gprof=no])
+if test "$use_gprof" = yes; then
+  CFLAGS="$CFLAGS -pg"
+  LDFLAGS="$LDFLAGS -pg"
+fi
+AM_CONDITIONAL(GPROF, test "$use_gprof" = yes)
+
+if test "$use_gcov" = yes -o "$use_gprof" = yes; then
+CFLAGS="$CFLAGS -O0 -g -Wall"
+else
+CFLAGS="$CFLAGS $OLD_CFLAGS"
+fi
+
+echo "================================================================================"
+echo $CFLAGS
+echo "================================================================================"
 
 # Uncomment this if you'll be exporting libraries (.so's)
 # Use AC_PROG_LIBTOOL instead of LT_INIT because
