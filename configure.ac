@@ -38,16 +38,8 @@ AM_CONDITIONAL(CLANG, test "$CLANG" = yes)
 
 AM_CONDITIONAL(GCC, test "$GCC" = yes)   # let the Makefile know if we're gcc
 
-echo "================================================================================"
-echo $CFLAGS
-echo "================================================================================"
-
 OLD_CFLAGS=$CFLAGS
 CFLAGS=
-
-echo "================================================================================"
-echo $CFLAGS
-echo "================================================================================"
 
 # Enable gcov suport.
 AC_ARG_ENABLE([gcov],
@@ -78,10 +70,6 @@ CFLAGS="$CFLAGS -O0 -g -Wall"
 else
 CFLAGS="$CFLAGS $OLD_CFLAGS"
 fi
-
-echo "================================================================================"
-echo $CFLAGS
-echo "================================================================================"
 
 # Uncomment this if you'll be exporting libraries (.so's)
 # Use AC_PROG_LIBTOOL instead of LT_INIT because
