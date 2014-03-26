@@ -55,17 +55,7 @@ if test "$use_gcov" = yes; then
 fi
 AM_CONDITIONAL(GCOV, test "$use_gcov" = yes)
 
-# Enable gprof suport.
-AC_ARG_ENABLE([gprof],
-AC_HELP_STRING([--enable-gprof],
-[build binaries with gprof support]), [use_gprof=yes], [use_gprof=no])
-if test "$use_gprof" = yes; then
-  CFLAGS="$CFLAGS -pg"
-  LDFLAGS="$LDFLAGS -pg"
-fi
-AM_CONDITIONAL(GPROF, test "$use_gprof" = yes)
-
-if test "$use_gcov" = yes -o "$use_gprof" = yes; then
+if test "$use_gcov" = yes; then
 CFLAGS="$CFLAGS -O0 -g -Wall"
 else
 CFLAGS="$CFLAGS $OLD_CFLAGS"
