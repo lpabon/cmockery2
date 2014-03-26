@@ -20,19 +20,26 @@ It may not be possible to compile a module into a test application without some 
 
 * Ubuntu
 
-```
+```sh
 $ sudo apt-get -y install libtool make autoconf automake gcc
 ```
 
 * Fedora/RHEL
 
-```
+```sh
 $ sudo yum -y install libtool make autoconf automake gcc
+```
+
+* Mac (with Homebrew)
+```sh
+xcode-select --install # if we to install clang
+
+$ brew install autoconf automake libtool
 ```
 
 ### Build cmockery
 
-```
+```sh
 $ ./autogen.sh
 $ ./configure
 $ make

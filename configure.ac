@@ -45,20 +45,19 @@ CFLAGS=
 AC_ARG_ENABLE([gcov],
 AC_HELP_STRING([--enable-gcov],
 [build binaries with gcov support]), [use_gcov=yes], [use_gcov=no])
-if test "$use_gcov" = yes; then
-  if test "$CLANG" = yes; then
+if test "x$use_gcov" = xyes; then
+  if test "x$CLANG" = xyes; then
     CFLAGS="$CFLAGS -fprofile-arcs -ftest-coverage"
-    LDFLAGS="$LDFLAGS -fprofile-arcs"
   else
     CFLAGS="$CFLAGS --coverage"
   fi
 fi
 AM_CONDITIONAL(GCOV, test "$use_gcov" = yes)
 
-if test "$use_gcov" = yes; then
-CFLAGS="$CFLAGS -O0 -g -Wall"
+if test "x$use_gcov" = xyes; then
+  CFLAGS="$CFLAGS -O0 -g -Wall"
 else
-CFLAGS="$CFLAGS $OLD_CFLAGS"
+  CFLAGS="$CFLAGS $OLD_CFLAGS"
 fi
 
 # Uncomment this if you'll be exporting libraries (.so's)
@@ -106,6 +105,13 @@ AC_CHECK_HEADERS(inttypes.h)
 AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(sys/time.h)
 AC_CHECK_TYPES([unsigned long long, uintmax_t, uintptr_t])
+
+# If pkg-config
+AC_CHECK_PROG(PKG_CONFIG, pkg-config, yes)
+AM_CONDITIONAL([HAVE_PKG_CONFIG], [test "x$PKG_CONFIG" != "x"])
+AS_IF([test "x$PKG_CONFIG" != "x"], [
+    AC_CONFIG_FILES([cmockery2.pc])
+])
 
 ## Check out ../autoconf/ for other macros you can call to do useful stuff
 
