@@ -32,7 +32,7 @@ AC_COMPILE_IFELSE(
        not clang
 #endif
 ]])],
-[CLANG=yes GCC=no], [CLANG=no GCC=yes])
+[CLANG=yes], [CLANG=no])
 AC_MSG_RESULT([$CLANG])
 AM_CONDITIONAL(CLANG, test "$CLANG" = yes)
 
