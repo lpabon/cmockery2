@@ -16,4 +16,4 @@ matrix:
   # It must work on clang 3.4
   allow_failures:
     - compiler: clang
-      env: ENABLE_GCOV=--enable-gcov
+      env: GCOV_FLAG=--enable-gcov
