@@ -2,6 +2,18 @@ language: c
 compiler:
     - gcc
     - clang
+env:
+  matrix:
+    - GCOV_FLAG=--enable-gcov
+    - GCOV_FLAG=
 script:
-    - ./autogen.sh && ./configure && make check
-    - ./autogen.sh && ./configure --enable-gcov && make check
+    - ./autogen.sh && ./configure $GCOV_FLAG && make check
+matrix:
+  # At this moment Travis has clang 3.3 installed on Linux machines and a bug
+  # has been reported with this version and the coverage feature on Linux:
+  # http://llvm.org/bugs/show_bug.cgi?id=15953
+  #
+  # It must work on clang 3.4
+  allow_failures:
+    - compiler: clang
+      env: ENABLE_GCOV=--enable-gcov
