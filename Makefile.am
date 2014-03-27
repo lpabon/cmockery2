@@ -10,7 +10,6 @@ ACLOCAL_AMFLAGS = -I m4
 
 # This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/cmockery
-AM_LDFLAGS = -lgcov
 
 cmockeryincludedir = $(includedir)/cmockery
 ## The .h files you want to install (that is, .h files that people
@@ -23,7 +22,13 @@ docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
 ## This is for HTML and other documentation you want to install.
 ## Add your documentation files (in doc/) in addition to these
 ## top-level boilerplate files.  Also add a TODO file if you have one.
-nodist_doc_DATA = AUTHORS COPYING ChangeLog doc/index.html doc/usage.md
+nodist_doc_DATA = AUTHORS COPYING ChangeLog doc/index.html doc/usage.md \
+    doc/coverage.md
+
+if HAVE_PKG_CONFIG
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = @PACKAGE_NAME@.pc
+endif
 
 ## The libraries (.so's) you want to install
 lib_LTLIBRARIES =
@@ -45,7 +50,8 @@ libcmockery_la_SOURCES = src/cmockery/config.h\
 						 src/cmockery/cmockery_override.h\
 						 src/cmockery/cmockery.h\
 						 src/cmockery/pbc.h
-libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery -Wall -Werror --coverage -DUNIT_TESTING=1
+libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery -DHAVE_CONFIG_H -Wall \
+                        -Werror
 
 noinst_PROGRAMS = calculator
 nodist_calculator_SOURCES = src/example/calculator.c src/cmockery/config.h
@@ -53,7 +59,7 @@ calculator_CFLAGS =
 
 unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
                    -I$(top_srcdir)/src/example -DUNIT_TESTING=1 \
-                   -Wall -Werror --coverage
+                   -Wall -Werror -DHAVE_CONFIG_H
 
 noinst_PROGRAMS += calculator_test
 TESTS += calculator_test

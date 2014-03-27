@@ -7,13 +7,20 @@ To install `gcovr` type the following command:
 $ sudo easy_install gcovr
 ```
 
-To enable [GNU Gcov][] support in your programs, you need to enable coverage support in GCC by adding the following CFLAGS to our build:
+To enable [GNU Gcov][] support in your programs, you need to enable coverage support by adding the following CFLAGS to our build:
+
+*In GCC
 
 ```
 CFLAGS += -O0 --coverage
+LDFLAGS += -lgcov
 ```
 
-You then need to link with the Gcov library by adding `-lgcov` to your LDFLAGS.
+*In LLVM Clang
+
+```
+CFLAGS += -O0 -fprofile-arcs -ftest-coverage
+```
 
 Once you have built your programs using the new flags, running the program will enable GNU Gcov to generate two files, one ending with `*.gcda` and another ending in `*.gcno`.  These files will be analyzed by `gcovr` to create the Corbertura XML files using the following command:
 

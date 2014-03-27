@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/lpabon/cmockery2.svg?branch=master)](https://travis-ci.org/lpabon/cmockery2)
+[![Build Status](https://travis-ci.org/Kerrigan29a/cmockery2.svg?branch=master)](https://travis-ci.org/Kerrigan29a/cmockery2)
 
 # Overview
 
