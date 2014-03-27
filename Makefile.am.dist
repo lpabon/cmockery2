@@ -22,7 +22,8 @@ docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
 ## This is for HTML and other documentation you want to install.
 ## Add your documentation files (in doc/) in addition to these
 ## top-level boilerplate files.  Also add a TODO file if you have one.
-nodist_doc_DATA = AUTHORS COPYING ChangeLog doc/index.html doc/usage.md
+nodist_doc_DATA = AUTHORS COPYING ChangeLog doc/index.html doc/usage.md \
+    doc/coverage.md
 
 if HAVE_PKG_CONFIG
 pkgconfigdir = $(libdir)/pkgconfig
