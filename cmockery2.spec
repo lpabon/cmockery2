@@ -7,7 +7,7 @@ URL:            https://github.com/lpabon/%{name}
 License:        ASL 2.0
 Source0:        https://github.com/lpabon/%{name}/archive/v%{version}/%{name}-%{version}.tar.gz
 Buildroot:      %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires:    automake libtool
+BuildRequires:    automake libtool pkgconfig
 
 %description
 Cmockery tests are compiled into a stand-alone executable and linked
@@ -90,6 +90,7 @@ make check
 %files devel
 %{_includedir}/cmockery*
 %{_libdir}/libcmockery.so
+%{_libdir}/pkgconfig/cmockery2.pc
 %exclude %{_libdir}/libcmockery.a
 %exclude %{_libdir}/libcmockery.la
 
