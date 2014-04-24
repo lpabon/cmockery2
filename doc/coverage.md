@@ -9,14 +9,14 @@ $ sudo easy_install gcovr
 
 To enable [GNU Gcov][] support in your programs, you need to enable coverage support by adding the following CFLAGS to our build:
 
-*In GCC
+* In GCC
 
 ```
 CFLAGS += -O0 --coverage
 LDFLAGS += -lgcov
 ```
 
-*In LLVM Clang
+* In LLVM Clang
 
 ```
 CFLAGS += -O0 -fprofile-arcs -ftest-coverage
