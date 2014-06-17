@@ -1,3 +1,8 @@
+Tue Jun 17 2014 Luis Pabón, Jr. <lpabon@redhat.com>
+	* Version v1.3.8
+	* Support for clang (thanks kerrigan29a@gmail.com)
+	* make check now works on source created by make dist
+
 Mon Mar 21 2014 Luis Pabon, Jr. <lpabon@redhat.com>
 	* Version v1.3.7
 	* Fixed memory check functions
