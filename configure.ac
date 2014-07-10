@@ -106,6 +106,8 @@ AC_CHECK_HEADERS(stdint.h)
 AC_CHECK_HEADERS(sys/time.h)
 AC_CHECK_TYPES([unsigned long long, uintmax_t, uintptr_t])
 
+AC_PREFIX_DEFAULT(/usr)
+
 # If pkg-config
 AC_CHECK_PROG(PKG_CONFIG, pkg-config, yes)
 AM_CONDITIONAL([HAVE_PKG_CONFIG], [test "x$PKG_CONFIG" != "x"])
