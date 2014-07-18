@@ -1103,7 +1103,7 @@ void _expect_not_value(
 static int check_string(const uintmax_t value,
                         const uintmax_t check_value_data) {
     return string_equal_display_error(
-        cast_largest_integral_type_to_pointer(char*, value),
+        (char *)((uintptr_t)value),
         cast_largest_integral_type_to_pointer(char*, check_value_data));
 }
 
@@ -1124,7 +1124,7 @@ void _expect_string(
 static int check_not_string(const uintmax_t value,
                             const uintmax_t check_value_data) {
     return string_not_equal_display_error(
-        cast_largest_integral_type_to_pointer(char*, value),
+        (char *)((uintptr_t)value),
         cast_largest_integral_type_to_pointer(char*, check_value_data));
 }
 
@@ -1147,7 +1147,7 @@ static int check_memory(const uintmax_t value,
         CheckMemoryData*, check_value_data);
     assert_non_null(check);
     return memory_equal_display_error(
-        cast_largest_integral_type_to_pointer(const char*, value),
+        (const char *)((uintptr_t)value),
         (const char*)check->memory, check->size);
 }
 
@@ -1191,8 +1191,8 @@ static int check_not_memory(const uintmax_t value,
         CheckMemoryData*, check_value_data);
     assert_non_null(check);
     return memory_not_equal_display_error(
-        cast_largest_integral_type_to_pointer(const char*, value),
-	(const char*)check->memory,
+        (const char *)((uintptr_t)value),
+        (const char*)check->memory,
         check->size);
 }
 
@@ -1591,7 +1591,7 @@ void _fail(const char * const file, const int line) {
 
 #ifndef _WIN32
 static void exception_handler(int sig) {
-#ifdef _HPUX
+#if defined(_HPUX) || !defined(HAVE_STRSIGNAL)
     print_error("%d\n", sig);
 #else
     print_error("%s\n", strsignal(sig));

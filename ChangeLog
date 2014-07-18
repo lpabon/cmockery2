@@ -1,3 +1,27 @@
+Tue Jun 17 2014 Luis Pabón, Jr. <lpabon@redhat.com>
+	* Version v1.3.8
+	* Support for clang (thanks kerrigan29a@gmail.com)
+	* make check now works on source created by make dist
+
+Mon Mar 21 2014 Luis Pabon, Jr. <lpabon@redhat.com>
+	* Version v1.3.7
+	* Fixed memory check functions
+	* Added new memory unit test
+
+Thu Mar 21 2014 Luis Pabon, Jr. <lpabon@redhat.com>
+	* Version v1.3.6
+	* Travis and RPM changes
+	* PPC Support
+
+Thu Mar 13 2014 Luis Pabon, Jr. <lpabon@redhat.com>
+	* Version v1.3.4
+	* Initial Fedora release
+
+Tue Mar 11 07:33:00 2014 Luis Pabon, Jr. <lpabon@redhat.com>
+	* cmockery: version 1.3.2
+	* Fixed issue where make dist was not including autoget.sh - jclift
+	* Various autoconf fixes
+
 Wed Feb 18 10:30:00 2014 Luis Pabon, Jr. <lpabon@redhat.com>
 	* cmockery: version 1.2
 	* Many configure.ac fixes

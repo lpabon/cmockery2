@@ -14,25 +14,41 @@ Cmockery tests are compiled into stand-alone executables and linked with the Cmo
 
 It may not be possible to compile a module into a test application without some modification, therefore the preprocessor symbol UNIT_TESTING should be defined when Cmockery unit test applications are compiled so code within the module can be conditionally compiled for tests.
 
-## Building
+## Installation
 
-### Environment Setup
+### Binary Installation
+Cmockery can be installed on Fedora/EPEL systems by doing the following:
+
+```
+$ sudo yum install cmockery2 cmockery2-devel
+```
+
+### Installing from the source
+
+#### Environment Setup
 
 * Ubuntu
 
-```
+```sh
 $ sudo apt-get -y install libtool make autoconf automake gcc
 ```
 
 * Fedora/RHEL
 
-```
+```sh
 $ sudo yum -y install libtool make autoconf automake gcc
 ```
 
-### Build cmockery
+* Mac (with Homebrew)
+```sh
+xcode-select --install # if we to install clang
 
+$ brew install autoconf automake libtool
 ```
+
+#### Build cmockery
+
+```sh
 $ ./autogen.sh
 $ ./configure
 $ make

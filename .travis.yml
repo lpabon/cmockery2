@@ -1,0 +1,10 @@
+language: c
+compiler:
+    - gcc
+    - clang
+env:
+  matrix:
+    - GCOV_FLAG=--enable-gcov
+    - GCOV_FLAG=
+script:
+    - ./autogen.sh && ./configure $GCOV_FLAG && make check

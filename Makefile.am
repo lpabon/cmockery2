@@ -6,11 +6,10 @@
 ## Process this file with automake to produce Makefile.in
 
 # Make sure that when we re-make ./configure, we get the macros we need
-ACLOCAL_AMFLAGS = -I ./m4
+ACLOCAL_AMFLAGS = -I m4
 
 # This is so we can #include <cmockery/foo>
-AM_CPPFLAGS = -I$(top_srcdir)/src
-AM_LDFLAGS = -lgcov
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/cmockery
 
 cmockeryincludedir = $(includedir)/cmockery
 ## The .h files you want to install (that is, .h files that people
@@ -23,8 +22,13 @@ docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
 ## This is for HTML and other documentation you want to install.
 ## Add your documentation files (in doc/) in addition to these
 ## top-level boilerplate files.  Also add a TODO file if you have one.
-dist_doc_DATA = AUTHORS COPYING ChangeLog INSTALL NEWS README.md doc/index.html \
-		windows/makefile doc/usage.md
+nodist_doc_DATA = AUTHORS COPYING ChangeLog doc/index.html doc/usage.md \
+    doc/coverage.md
+
+if HAVE_PKG_CONFIG
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = @PACKAGE_NAME@.pc
+endif
 
 ## The libraries (.so's) you want to install
 lib_LTLIBRARIES =
@@ -41,45 +45,47 @@ noinst_SCRIPTS =
 ## vvvv RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
 
 lib_LTLIBRARIES += libcmockery.la
-libcmockery_la_SOURCES = src/config.h\
+libcmockery_la_SOURCES = src/cmockery/config.h\
 						 src/cmockery.c\
 						 src/cmockery/cmockery_override.h\
 						 src/cmockery/cmockery.h\
 						 src/cmockery/pbc.h
-libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery
+libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery -DHAVE_CONFIG_H -Wall \
+                        -Werror
 
 noinst_PROGRAMS = calculator
-calculator_SOURCES = src/example/calculator.c src/config.h
+nodist_calculator_SOURCES = src/example/calculator.c src/cmockery/config.h
 calculator_CFLAGS =
 
 unit_test_CFLAGS = -I$(top_srcdir)/src/cmockery \
-                   -I$(top_srcdir)/src/example -DUNIT_TESTING=1
+                   -I$(top_srcdir)/src/example -DUNIT_TESTING=1 \
+                   -Wall -Werror -DHAVE_CONFIG_H
 
 noinst_PROGRAMS += calculator_test
 TESTS += calculator_test
-calculator_test_SOURCES = src/example/calculator_test.c \
-                          $(calculator_SOURCES)
+nodist_calculator_test_SOURCES = src/example/calculator_test.c \
+                          $(nodist_calculator_SOURCES)
 calculator_test_CFLAGS = $(unit_test_CFLAGS)
 calculator_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += allocate_module_test
 # Don't add this one, it returns a fail exit status,
 # which is expected. TESTS += allocate_module_test
-allocate_module_test_SOURCES = src/example/allocate_module_test.c \
+nodist_allocate_module_test_SOURCES = src/example/allocate_module_test.c \
                                src/example/allocate_module.c
 allocate_module_test_CFLAGS = $(unit_test_CFLAGS)
 allocate_module_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += assert_macro_test
 TESTS += assert_macro_test
-assert_macro_test_SOURCES = src/example/assert_macro_test.c \
+nodist_assert_macro_test_SOURCES = src/example/assert_macro_test.c \
                             src/example/assert_macro.c
 assert_macro_test_CFLAGS = $(unit_test_CFLAGS)
 assert_macro_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += customer_database_test
 TESTS += customer_database_test
-customer_database_test_SOURCES = src/example/customer_database_test.c \
+nodist_customer_database_test_SOURCES = src/example/customer_database_test.c \
                                  src/example/customer_database.c \
                                  src/example/database.h
 customer_database_test_CFLAGS = $(unit_test_CFLAGS)
@@ -95,7 +101,7 @@ hash_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += key_value_test
 TESTS += key_value_test
-key_value_test_SOURCES = src/example/key_value_test.c \
+nodist_key_value_test_SOURCES = src/example/key_value_test.c \
 			 src/example/key_value.h \
                          src/example/key_value.c
 key_value_test_CFLAGS = $(unit_test_CFLAGS)
@@ -104,7 +110,7 @@ key_value_test_LDADD = libcmockery.la
 noinst_PROGRAMS += product_database_test
 TESTS += product_database_test
 product_database_testdir = src/example
-product_database_test_SOURCES = src/example/product_database_test.c \
+nodist_product_database_test_SOURCES = src/example/product_database_test.c \
                                 src/example/product_database.c \
                                 src/example/database.h
 product_database_test_CFLAGS = $(unit_test_CFLAGS)
@@ -112,15 +118,21 @@ product_database_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += run_tests
 TESTS += run_tests
-run_tests_SOURCES = src/example/run_tests.c
+nodist_run_tests_SOURCES = src/example/run_tests.c
 run_tests_CFLAGS = $(unit_test_CFLAGS)
 run_tests_LDADD = libcmockery.la
 
 noinst_PROGRAMS += realloc_test
 TESTS += realloc_test
-realloc_test_SOURCES = src/example/realloc_test.c
+nodist_realloc_test_SOURCES = src/example/realloc_test.c
 realloc_test_CFLAGS = $(unit_test_CFLAGS)
 realloc_test_LDADD = libcmockery.la
+
+noinst_PROGRAMS += mem_test
+TESTS += mem_test
+nodist_mem_test_SOURCES = src/example/mem_test.c
+mem_test_CFLAGS = $(unit_test_CFLAGS)
+mem_test_LDADD = libcmockery.la
 
 ## ^^^^ END OF RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
 
@@ -138,8 +150,9 @@ deb: dist-gzip packages/deb.sh packages/deb/*
 ## If you're using libtool, add 'libtool' here.  Also add this rule:
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
-EXTRA_DIST = packages/rpm.sh packages/rpm/rpm.spec packages/deb.sh packages/deb \
-	libtool $(SCRIPTS)
+EXTRA_DIST = autogen.sh README.md $(SCRIPTS)
 
 CLEANFILES = *.gcda *.gcno *_xunit.xml
 
+dist-hook:
+	cp $(top_srcdir)/Makefile.am.dist $(top_distdir)/Makefile.am

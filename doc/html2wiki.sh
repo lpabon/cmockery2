@@ -19,7 +19,7 @@ BEGIN { in_listing = 0; }
     print gensub("*", "`*`", "g", $0)
   }
 }' | \
-# Awk program to convert hierachical unordered and ordered lists into
+# Awk program to convert hierarchical unordered and ordered lists into
 # googlecode wiki list markup.  This is limited to converting very simple
 # html lists in the form:
 #

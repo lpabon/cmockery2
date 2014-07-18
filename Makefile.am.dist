@@ -1,0 +1,60 @@
+## This is a boilerplate file for Google opensource projects.
+## To make it useful, replace <<TEXT>> with actual text for your project.
+## Also, look at comments with "## double hashes" to see if any are worth
+## uncommenting or modifying.
+
+## Process this file with automake to produce Makefile.in
+
+# Make sure that when we re-make ./configure, we get the macros we need
+ACLOCAL_AMFLAGS = -I m4
+
+# This is so we can #include <cmockery/foo>
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/cmockery
+
+cmockeryincludedir = $(includedir)/cmockery
+## The .h files you want to install (that is, .h files that people
+## who install this package can include in their own applications.)
+cmockeryinclude_HEADERS = src/cmockery/cmockery_override.h\
+						  src/cmockery/cmockery.h\
+						  src/cmockery/pbc.h
+
+docdir = $(prefix)/share/doc/$(PACKAGE)-$(VERSION)
+## This is for HTML and other documentation you want to install.
+## Add your documentation files (in doc/) in addition to these
+## top-level boilerplate files.  Also add a TODO file if you have one.
+nodist_doc_DATA = AUTHORS COPYING ChangeLog
+
+if HAVE_PKG_CONFIG
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = @PACKAGE_NAME@.pc
+endif
+
+## The libraries (.so's) you want to install
+lib_LTLIBRARIES =
+
+## unittests you want to run when people type 'make check'.
+## TESTS is for binary unittests, check_SCRIPTS for script-based unittests.
+## TESTS_ENVIRONMENT sets environment variables for when you run unittest,
+## but it only seems to take effect for *binary* unittests (argh!)
+TESTS = 
+check_SCRIPTS =
+noinst_SCRIPTS =
+
+
+## vvvv RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
+
+lib_LTLIBRARIES += libcmockery.la
+libcmockery_la_SOURCES = src/cmockery/config.h\
+						 src/cmockery.c\
+						 src/cmockery/cmockery_override.h\
+						 src/cmockery/cmockery.h\
+						 src/cmockery/pbc.h
+libcmockery_la_CFLAGS = -I$(top_srcdir)/src/cmockery -DHAVE_CONFIG_H
+
+## ^^^^ END OF RULES TO MAKE THE LIBRARIES, BINARIES, AND UNITTESTS
+
+## If you're using libtool, add 'libtool' here.  Also add this rule:
+CLEANFILES = *.gcda *.gcno *_xunit.xml
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status --recheck
+EXTRA_DIST = autogen.sh README.md $(SCRIPTS)
