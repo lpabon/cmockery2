@@ -12,18 +12,19 @@ EXTRACT_SUFX=
 MAINTAINER=       harsha@harshavardhana.net
 COMMENT=          Cmockery2 revival of Cmockery unit test framework from Google
 
-LICENSE=          AL2
+LICENSE=          APACHE20
 
 WRKSRC=           ${WRKDIR}/cmockery2-${PORTVERSION}
 
 PLIST_SUB+=       RESETPREFIX=${PREFIX}
 
+BUILD_DEPENDS+=   pkgconf:${PORTSDIR}/devel/pkgconf
+
 GNU_CONFIGURE=    yes
 
 INSTALL_TARGET=   install-strip
 # Disable gcov on FreeBSD
-#CONFIGURE_ARGS=   --enable-gcov
-PREFIX= /usr
+# CONFIGURE_ARGS=   --enable-gcov
 
 pre-configure:
 	@${ECHO_MSG} "Running autogen.sh..."
