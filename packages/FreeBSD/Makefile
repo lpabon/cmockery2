@@ -18,8 +18,12 @@ WRKSRC=           ${WRKDIR}/cmockery2-${PORTVERSION}
 
 PLIST_SUB+=       RESETPREFIX=${PREFIX}
 
+BUILD_DEPENDS+=   automake:${PORTSDIR}/devel/automake
+BUILD_DEPENDS+=   autoconf:${PORTSDIR}/devel/autoconf
 BUILD_DEPENDS+=   pkgconf:${PORTSDIR}/devel/pkgconf
+BUILD_DEPENDS+=   libtool:${PORTSDIR}/devel/libtool
 
+USES=             libtool
 GNU_CONFIGURE=    yes
 
 INSTALL_TARGET=   install-strip
