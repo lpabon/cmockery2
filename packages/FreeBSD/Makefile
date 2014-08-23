@@ -2,44 +2,33 @@
 # $FreeBSD$
 #
 
-PORTNAME=         cmockery2
-PORTVERSION=      1.3.8
-CATEGORIES=       sysutils
-MASTER_SITES=     https://codeload.github.com/lpabon/cmockery2/tar.gz/
-DISTNAME=         v1.3.8
+PORTNAME=	cmockery2
+PORTVERSION=	1.3.8
+CATEGORIES=	sysutils
+MASTER_SITES=	https://codeload.github.com/lpabon/cmockery2/tar.gz/
+DISTNAME=	v1.3.8
 EXTRACT_SUFX=
 
-MAINTAINER=       harsha@harshavardhana.net
-COMMENT=          Cmockery2 revival of Cmockery unit test framework from Google
+MAINTAINER=	harsha@harshavardhana.net
+COMMENT=	Cmockery2 revival of Cmockery unit test framework from Google
 
-LICENSE=          APACHE20
+LICENSE=	APACHE20
 
-WRKSRC=           ${WRKDIR}/cmockery2-${PORTVERSION}
+WRKSRC=		${WRKDIR}/cmockery2-${PORTVERSION}
 
-PLIST_SUB+=       RESETPREFIX=${PREFIX}
+USES=		libtool:build pkgconfig
+USE_AUTOTOOLS=	automake autoconf aclocal libtoolize autoheader
+AUTOMAKE_ARGS=	--add-missing
+GNU_CONFIGURE=	yes
+USE_LDCONFIG=	yes
 
-BUILD_DEPENDS+=   automake:${PORTSDIR}/devel/automake
-BUILD_DEPENDS+=   autoconf:${PORTSDIR}/devel/autoconf
-BUILD_DEPENDS+=   pkgconf:${PORTSDIR}/devel/pkgconf
-BUILD_DEPENDS+=   libtool:${PORTSDIR}/devel/libtool
-
-USES=             libtool
-GNU_CONFIGURE=    yes
-
-INSTALL_TARGET=   install-strip
+INSTALL_TARGET=	install-strip
 # Disable gcov on FreeBSD
-# CONFIGURE_ARGS=   --enable-gcov
+# CONFIGURE_ARGS=	--enable-gcov
 
-pre-configure:
-	@${ECHO_MSG} "Running autogen.sh..."
-	cd ${WRKSRC} && ./autogen.sh
-
-post-install:
-	@${ECHO_MSG} ""
-	@${ECHO_MSG} "===================================================="
-	@${ECHO_MSG} "Remember to visit for reading up documentation"
-	@${ECHO_MSG} "https://github.com/lpabon/cmockery2/blob/master/doc/usage.md"
-	@${ECHO_MSG} ""
-	@${ECHO_MSG} "===================================================="
+post-patch:
+	@${REINPLACE_CMD} -e '/^docdir =/s|-$$(VERSION)||' \
+		-e '/^pkgconfigdir =/s|$$(libdir)|$$(prefix)/libdata|' \
+		${WRKSRC}/Makefile.am
 
 .include <bsd.port.mk>
