@@ -5,13 +5,12 @@ lib/libcmockery.a
 lib/libcmockery.so
 lib/libcmockery.so.0
 lib/libcmockery.so.0.0.0
-lib/pkgconfig/cmockery2.pc
-%%PORTDOCS%%%%DOCSDIR%%-1.3.8/AUTHORS
-%%PORTDOCS%%%%DOCSDIR%%-1.3.8/COPYING
-%%PORTDOCS%%%%DOCSDIR%%-1.3.8/ChangeLog
-%%PORTDOCS%%%%DOCSDIR%%-1.3.8/coverage.md
-%%PORTDOCS%%%%DOCSDIR%%-1.3.8/index.html
-%%PORTDOCS%%%%DOCSDIR%%-1.3.8/usage.md
-%%PORTDOCS%%@dirrmtry %%DOCSDIR%%-1.3.8
-@dirrmtry lib/pkgconfig
+libdata/pkgconfig/cmockery2.pc
+%%PORTDOCS%%%%DOCSDIR%%/AUTHORS
+%%PORTDOCS%%%%DOCSDIR%%/COPYING
+%%PORTDOCS%%%%DOCSDIR%%/ChangeLog
+%%PORTDOCS%%%%DOCSDIR%%/coverage.md
+%%PORTDOCS%%%%DOCSDIR%%/index.html
+%%PORTDOCS%%%%DOCSDIR%%/usage.md
+%%PORTDOCS%%@dirrm %%DOCSDIR%%
 @dirrmtry include/cmockery
