@@ -17,6 +17,7 @@
 
 // If unit testing is enabled override assert with mock_assert().
 #ifdef UNIT_TESTING
+#include <stdio.h>
 #include <cmockery_override.h>
 #endif
 
