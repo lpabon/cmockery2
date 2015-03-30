@@ -64,7 +64,7 @@ extern void mock_assert(const int result, const char* const expression,
 
 /* Redirect to use test functions */
 #define assert(expression) \
-    mock_assert((int)(expression), #expression, __FILE__, __LINE__);
+    mock_assert((int)(expression), #expression, __FILE__, __LINE__)
 
 // Redirect malloc, calloc and free to the unit test allocators.
 #define test_malloc(size) _test_malloc(size, __FILE__, __LINE__)

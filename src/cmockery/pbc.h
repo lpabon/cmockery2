@@ -37,12 +37,12 @@
 /*
  * Checks caller responsibility against contract
  */
-#define REQUIRE(cond) assert(cond)
+#define REQUIRE(cond)   assert(cond)
 
 /*
  * Checks function reponsability against contract.
  */
-#define ENSURE(cond) assert(cond)
+#define ENSURE(cond)    assert(cond)
 
 /*
  * While REQUIRE and ENSURE apply to functions, INVARIANT
@@ -50,12 +50,13 @@
  * of the class/struct are consistent. In other words,
  * that the instance has not been corrupted.
  */
-#define INVARIANT(invariant_fnc) do{ (invariant_fnc) } while (0);
+#define INVARIANT(cond) assert(cond)
 
 #else
-#define REQUIRE(cond) do { } while (0);
-#define ENSURE(cond) do { } while (0);
-#define INVARIANT(invariant_fnc) do{ } while (0);
+
+#define REQUIRE(cond)   ((void) 0)
+#define ENSURE(cond)    ((void) 0)
+#define INVARIANT(cond) ((void) 0)
 
 #endif /* defined(UNIT_TESTING) || defined (DEBUG) */
 #endif /* CMOCKERY_PBC_H_ */
