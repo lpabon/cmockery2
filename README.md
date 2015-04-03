@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/lpabon/cmockery2.svg?branch=master)](https://travis-ci.org/lpabon/cmockery2)
 
->NOTE: Cmockery2 development will be continued by the project [Cmocka](https://cmocka.org/).  I will continue hosting Cmockery2 and merging any patches sent by the community for those of you who would like to continue using cmockery2.  
-
 Cmockery tests are compiled into a stand-alone executable and linked
 with the cmockery library, the standard C library and module being
 tested. Any symbols external to the module being tested should be
