@@ -1,3 +1,8 @@
+Mon Apr 13 2015 Luis Pabón, Jr. <lpabon@redhat.com>
+	* Version v1.3.9
+	* Minor bug fixes(thanks kerrigan29a and RocFang)
+	* FreeBSD package support (thanks harshavardhana)
+
 Tue Jun 17 2014 Luis Pabón, Jr. <lpabon@redhat.com>
 	* Version v1.3.8
 	* Support for clang (thanks kerrigan29a@gmail.com)
