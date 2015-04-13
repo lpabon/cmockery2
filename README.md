@@ -25,4 +25,4 @@ which is a successor of Google's http://code.google.com/p/cmockery/.
 * [Coverage Support with Jenkins](doc/coverage.md)
 
 # Presentations
-* [Test Methodologies in C](http://slides-lpabon.rhcloud.com/feb24_glusterfs_unittest.html)
+* [Devconf 2015](http://slides-lpabon.rhcloud.com/02052015_devconf_cmockery2.html)
