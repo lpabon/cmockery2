@@ -21,6 +21,8 @@ which is a successor of Google's http://code.google.com/p/cmockery/.
 
 
 # Documentation
+
+[![Join the chat at https://gitter.im/lpabon/cmockery2](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/lpabon/cmockery2?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 * [Usage Guide](doc/usage.md)
 * [Coverage Support with Jenkins](doc/coverage.md)
 
