@@ -37,7 +37,7 @@ lib_LTLIBRARIES =
 ## TESTS is for binary unittests, check_SCRIPTS for script-based unittests.
 ## TESTS_ENVIRONMENT sets environment variables for when you run unittest,
 ## but it only seems to take effect for *binary* unittests (argh!)
-TESTS = 
+TESTS =
 check_SCRIPTS =
 noinst_SCRIPTS =
 
@@ -107,6 +107,12 @@ nodist_product_database_test_SOURCES = src/example/product_database_test.c \
                                 src/example/database.h
 product_database_test_CFLAGS = $(unit_test_CFLAGS)
 product_database_test_LDADD = libcmockery.la
+
+noinst_PROGRAMS += game_test
+TESTS += game_test
+nodist_game_test_SOURCES = src/example/game_test.c src/example/game.c
+game_test_CFLAGS = $(unit_test_CFLAGS)
+game_test_LDADD = libcmockery.la
 
 noinst_PROGRAMS += run_tests
 TESTS += run_tests

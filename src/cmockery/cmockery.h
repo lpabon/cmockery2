@@ -140,7 +140,7 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
  */
 #define expect_check(function, parameter, check_function, check_data) \
     _expect_check(#function, #parameter, __FILE__, __LINE__, check_function, \
-                  cast_to_largest_integral_type(check_data), NULL, 0)
+                  cast_to_largest_integral_type(check_data), NULL, 1)
 
 /* Add an event to check a parameter, using check_expected(), against a set of
  * values. See will_return() for a description of the count parameter.
