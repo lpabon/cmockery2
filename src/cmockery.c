@@ -854,7 +854,7 @@ static int integer_not_in_range_display_error(
     if (value < range_min || value > range_max) {
         return 1;
     }
-    print_error("%" PRIuMAX " is within the range %" PRIuMAX "-%" PRIuMAX "\n", 
+    print_error("%" PRIuMAX " is within the range %" PRIuMAX "-%" PRIuMAX "\n",
 				value, range_min, range_max);
     return 0;
 }
@@ -886,6 +886,31 @@ static int string_not_equal_display_error(
 }
 
 
+/* Determine whether needle is within haystack.  If needle is found
+ * 1 is returned.  If needle is not found an error is displayed and 0 is
+ * returned. */
+static int value_in_string_display_error(
+        const char * const haystack, const char * const needle) {
+    if (strstr(haystack, needle)) {
+        return 1;
+    }
+    print_error("\"%s\" not found in \"%s\"\n", needle, haystack);
+    return 0;
+}
+
+/* Determine whether needle is within haystack.  If needle is not found
+ * 1 is returned.  If needle is found an error is displayed and 0 is
+ * returned. */
+static int value_not_in_string_display_error(
+        const char * const haystack, const char * const needle) {
+    if (!strstr(haystack, needle)) {
+        return 1;
+    }
+    print_error("\"%s\" found in \"%s\"\n", needle, haystack);
+    return 0;
+}
+
+
 /* Determine whether the specified areas of memory are equal.  If they're equal
  * 1 is returned otherwise an error is displayed and 0 is returned. */
 static int memory_equal_display_error(const char* const a, const char* const b,
@@ -896,15 +921,15 @@ static int memory_equal_display_error(const char* const a, const char* const b,
         const char l = a[i];
         const char r = b[i];
         if (l != r) {
-            print_error("difference at offset %" PRIuMAX " 0x%02x 0x%02x\n", 
+            print_error("difference at offset %" PRIuMAX " 0x%02x 0x%02x\n",
 						cast_to_largest_integral_type(i), l, r);
             differences ++;
         }
     }
     if (differences) {
-        print_error("%d bytes of 0x%08" PRIxMAX " and 0x%08" PRIxMAX " differ\n", 
+        print_error("%d bytes of 0x%08" PRIxMAX " and 0x%08" PRIxMAX " differ\n",
 					differences,
-                    cast_ptr_to_largest_integral_type(a), 
+                    cast_ptr_to_largest_integral_type(a),
 					cast_ptr_to_largest_integral_type(b));
         return 0;
     }
@@ -927,9 +952,9 @@ static int memory_not_equal_display_error(
         }
     }
     if (same == size) {
-        print_error("%" PRIuMAX " bytes of 0x%08" PRIxMAX " and 0x%08" PRIxMAX" the same\n", 
+        print_error("%" PRIuMAX " bytes of 0x%08" PRIxMAX " and 0x%08" PRIxMAX" the same\n",
 					cast_to_largest_integral_type(same),
-                    cast_ptr_to_largest_integral_type(a), 
+                    cast_ptr_to_largest_integral_type(a),
 					cast_ptr_to_largest_integral_type(b));
         return 0;
     }
@@ -1387,6 +1412,20 @@ void _assert_not_in_set(const uintmax_t value,
     }
 }
 
+void _assert_in_string(const char * const a, const char * const b,
+                          const char * const file, const int line) {
+    if (!value_in_string_display_error(a, b)) {
+        _fail(file, line);
+    }
+}
+
+void _assert_not_in_string(const char * const a, const char * const b,
+                          const char * const file, const int line) {
+    if (!value_not_in_string_display_error(a, b)) {
+        _fail(file, line);
+    }
+}
+
 
 // Get the list of allocated blocks.
 static ListNode* get_allocated_blocks_list() {
@@ -1463,7 +1502,7 @@ void _test_free(void* const ptr, const char* file, const int line) {
                     print_error(
                         "Guard block of 0x%08" PRIxMAX " size=%" PRIuMAX " allocated by "
                         SOURCE_LOCATION_FORMAT " at 0x%08" PRIxMAX " is corrupt\n",
-                        cast_ptr_to_largest_integral_type(ptr), 
+                        cast_ptr_to_largest_integral_type(ptr),
 						cast_to_largest_integral_type(block_info->size),
                         block_info->location.file, block_info->location.line,
                         cast_ptr_to_largest_integral_type(&guard[j]));
@@ -1482,10 +1521,10 @@ void _test_free(void* const ptr, const char* file, const int line) {
 
 
 // Implement realloc using _test_xalloc functions
-void * 
-_test_realloc(void* ptr, 
-        const size_t size, 
-        const char* file, 
+void *
+_test_realloc(void* ptr,
+        const size_t size,
+        const char* file,
         const int line)
 {
 
@@ -1545,7 +1584,7 @@ static int display_allocated_blocks(const ListNode * const check_point) {
             print_error("Blocks allocated...\n");
         }
         print_error("  0x%08" PRIxMAX " : " SOURCE_LOCATION_FORMAT "\n",
-                    cast_ptr_to_largest_integral_type(block_info->block), 
+                    cast_ptr_to_largest_integral_type(block_info->block),
 					block_info->location.file,
                     block_info->location.line);
         allocated_blocks ++;
@@ -1745,7 +1784,7 @@ int _run_test(
 
         // Collect time data
         gettimeofday(&time_end, NULL);
-        testcase->time_in_msecs = 
+        testcase->time_in_msecs =
             ( (time_end.tv_sec-time_start.tv_sec)*1000.0
               + (time_end.tv_usec-time_start.tv_usec)/1000.0 );
 
