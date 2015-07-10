@@ -188,17 +188,6 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
     _expect_in_string(#function, #parameter, __FILE__, __LINE__, string, \
                       count)
 
-/* Add an event to check a parameter, using check_expected(), against a
- * signed range.  Where range is value < minimum or value > maximum.
- * See will_return() for a description of the count parameter.
- */
-#define expect_not_in_range(function, parameter, minimum, maximum) \
-    expect_not_in_range_count(function, parameter, minimum, maximum, 1)
-#define expect_not_in_range_count(function, parameter, minimum, maximum, \
-                                  count) \
-    _expect_not_in_range(#function, #parameter, __FILE__, __LINE__, \
-                         minimum, maximum, count)
-
 /* Add an event to check whether a parameter, using check_expected(), is or
  * isn't a value.  See will_return() for a description of the count parameter.
  */

@@ -11,6 +11,21 @@ install-sh
 ltmain.sh
 m4/
 missing
-src/cmockery/config.h.in*
 test-driver
 *.sublime-*
+
+# some build artifacts... why aren't these ignored?
+/src/cmockery/config.h*
+/*_test
+/*.o
+/.deps/
+/.libs/
+/Makefile
+/calculator
+/cmockery2.pc
+/config.log
+/config.status
+/libcmockery.la
+/libcmockery_la-cmockery.lo
+/libtool
+/run_tests
