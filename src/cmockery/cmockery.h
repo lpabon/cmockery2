@@ -187,6 +187,11 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
 #define expect_in_string_count(function, parameter, string, count) \
     _expect_in_string(#function, #parameter, __FILE__, __LINE__, string, \
                       count)
+#define expect_not_in_string(function, parameter, string) \
+    expect_not_in_string_count(function, parameter, string, 1)
+#define expect_not_in_string_count(function, parameter, string, count) \
+    _expect_not_in_string(#function, #parameter, __FILE__, __LINE__, string, \
+                      count)
 
 /* Add an event to check whether a parameter, using check_expected(), is or
  * isn't a value.  See will_return() for a description of the count parameter.

@@ -1089,6 +1089,47 @@ void _expect_not_in_range(
 }
 
 
+// CheckParameterValue callback to check whether a parameter is in a string.
+static int check_in_string(const uintmax_t value,
+                        const uintmax_t check_value_data) {
+    return value_in_string_display_error(
+        (char *)((uintptr_t)value),
+        cast_largest_integral_type_to_pointer(char*, check_value_data));
+}
+
+
+// Add an event to check whether a parameter is in a string.
+void _expect_in_string(
+        const char* const function, const char* const parameter,
+        const char* const file, const int line, const char* string,
+        const int count) {
+    declare_initialize_value_pointer_pointer(string_pointer, (char*)string);
+    _expect_check(function, parameter, file, line, check_in_string,
+                  string_pointer.value, NULL, count);
+}
+
+
+/* CheckParameterValue callback to check whether a parameter is in
+ * a string. */
+static int check_not_in_string(const uintmax_t value,
+                            const uintmax_t check_value_data) {
+    return value_not_in_string_display_error(
+        (char *)((uintptr_t)value),
+        cast_largest_integral_type_to_pointer(char*, check_value_data));
+}
+
+
+// Add an event to check whether a parameter is not in a string.
+void _expect_not_in_string(
+        const char* const function, const char* const parameter,
+        const char* const file, const int line, const char* string,
+        const int count) {
+    declare_initialize_value_pointer_pointer(string_pointer, (char*)string);
+    _expect_check(function, parameter, file, line, check_not_in_string,
+                  string_pointer.value, NULL, count);
+}
+
+
 /* CheckParameterValue callback to check whether a value is equal to an
  * expected value. */
 static int check_value(const uintmax_t value,
