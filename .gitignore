@@ -16,6 +16,7 @@ test-driver
 
 # some build artifacts... why aren't these ignored?
 /src/cmockery/config.h*
+/src/cmockery/stamp-h1
 /*_test
 /*.o
 /.deps/
