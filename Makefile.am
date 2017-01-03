@@ -11,6 +11,9 @@ ACLOCAL_AMFLAGS = -I m4
 # This is so we can #include <cmockery/foo>
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/cmockery
 
+# Allow .o files in subdirectories
+AUTOMAKE_OPTIONS = subdir-objects
+
 cmockeryincludedir = $(includedir)/cmockery
 ## The .h files you want to install (that is, .h files that people
 ## who install this package can include in their own applications.)
