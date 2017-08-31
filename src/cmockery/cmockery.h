@@ -240,6 +240,52 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
     _check_expected(__func__, #parameter, __FILE__, __LINE__, \
                     cast_to_largest_integral_type(parameter))
 
+/*
+ * Assert that the given function have been called a specific number of times,
+ * otherwise fail.
+ */
+#define assert_func_call_count_equal(function, callCount) \
+	_assert_func_call_count_equal(#function, callCount, __FILE__, __LINE__)
+
+/*
+ * Assert that the given function have been called at least a number of times,
+ * otherwise fail.
+ */
+#define assert_func_call_count_at_least(function, callCount) \
+	_assert_func_call_count_at_least(#function, callCount, __FILE__, __LINE__)
+
+/*
+ * Assert that the given function have been called at most a number of times,
+ * otherwise fail.
+ */
+#define assert_func_call_count_at_most(function, callCount) \
+	_assert_func_call_count_at_most(#function, callCount, __FILE__, __LINE__)
+
+/*
+ * Assert that the given function haven't been called, otherwise fail.
+ */
+#define assert_func_not_call(function) \
+	assert_func_call_count_equal(#function, -1L)
+
+/*
+ * Increments the function call counter of the function in which this macro
+ * is called.
+ */
+#define inc_func_call_count() \
+	_inc_func_call_count(__func__, __FILE__, __LINE__)
+
+/*
+ * Returns the function call counter of a function.
+ */
+#define get_func_call_count(function) \
+	_get_func_call_count(#function)
+
+/*
+ * Resets the function call counter of a function.
+ */
+#define reset_func_call_count(function) \
+	_reset_func_call_count(#function)
+
 // Assert that the given expression is true.
 #define assert_true(c) _assert_true(cast_to_largest_integral_type(c), #c, \
                                     __FILE__, __LINE__)
@@ -439,6 +485,12 @@ typedef struct CheckParameterEvent {
     uintmax_t check_value_data;
 } CheckParameterEvent;
 
+
+typedef struct FunctionCallEvent {
+    SourceLocation location;
+    uintmax_t func_call_count;
+} FunctionCallEvent;
+
 // Used by expect_assert_failure() and mock_assert().
 extern volatile int global_expecting_assert;
 extern jmp_buf global_expect_assert_env;
@@ -544,6 +596,17 @@ void _assert_in_set(
 void _assert_not_in_set(
     const uintmax_t value, const uintmax_t values[],
     const size_t number_of_values, const char* const file, const int line);
+
+void _inc_func_call_count(
+        const char * const function_name, const char* file, const int line);
+int _get_func_call_count(const char * const function_name);
+void _reset_func_call_count(const char * const function_name);
+void _assert_func_call_count_equal(const char* const function, const int callCount,
+		const char* file, const int line);
+void _assert_func_call_count_at_least(const char* const function, const int callCount,
+		const char* file, const int line);
+void _assert_func_call_count_at_most(const char* const function, const int callCount,
+		const char* file, const int line);
 
 void _fail(const char * const file, const int line);
 

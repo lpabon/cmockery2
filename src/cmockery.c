@@ -208,6 +208,8 @@ static ListNode* list_free(
     ListNode * const head, const CleanupListValue cleanup_value,
     void * const cleanup_value_data);
 
+static int get_func_call_event(
+        ListNode * const head, const char * const function_name, void **output);
 static void add_symbol_value(
     ListNode * const symbol_map_head, const char * const symbol_names[],
     const size_t number_of_symbol_names, const void* value, const int count);
@@ -233,7 +235,6 @@ int _run_test(
     const void* const heap_check_point,
     XunitTestCase *testcase);
 
-
 // Keeps track of the calling context returned by setenv() so that the fail()
 // method can jump out of a test.
 static jmp_buf global_run_test_env;
@@ -255,6 +256,10 @@ static SourceLocation global_last_mock_value_location;
 /* Keeps a map of the values that functions expect as parameters to their
  * mocked interfaces. */
 static ListNode global_function_parameter_map_head;
+
+/* Keeps a map of the function call counters. */
+static ListNode global_function_call_count_map_head;
+
 // Location of last parameter value checked was declared.
 static SourceLocation global_last_parameter_location;
 
@@ -356,6 +361,7 @@ void initialize_testing(const char *test_name) {
     initialize_source_location(&global_last_mock_value_location);
     list_initialize(&global_function_parameter_map_head);
     initialize_source_location(&global_last_parameter_location);
+    list_initialize(&global_function_call_count_map_head);
 }
 
 
@@ -389,6 +395,8 @@ void teardown_testing(const char *test_name) {
     list_free(&global_function_parameter_map_head, free_symbol_map_value,
               (void*)1);
     initialize_source_location(&global_last_parameter_location);
+    list_free(&global_function_call_count_map_head, free_symbol_map_value,
+              (void*)0);
 }
 
 // Initialize a list node.
@@ -529,7 +537,6 @@ static int symbol_names_match(const void *map_value, const void *symbol) {
     return !strcmp(((SymbolMapValue*)map_value)->symbol_name,
                    (const char*)symbol);
 }
-
 
 /* Adds a value to the queue of values associated with the given
  * hierarchy of symbols.  It's assumed value is allocated from the heap.
@@ -1225,6 +1232,110 @@ void _expect_any(
                   count);
 }
 
+void _assert_func_call_count_equal(const char* const function, const int callCount,
+		const char* file, const int line)
+{
+	if (_get_func_call_count(function) != callCount) {
+	    _fail(file, line);
+	}
+}
+
+void _assert_func_call_count_at_least(const char* const function, const int callCount,
+		const char* file, const int line)
+{
+	if (_get_func_call_count(function) < callCount) {
+	    _fail(file, line);
+	}
+}
+
+void _assert_func_call_count_at_most(const char* const function, const int callCount,
+		const char* file, const int line)
+{
+	if (_get_func_call_count(function) > callCount) {
+	    _fail(file, line);
+	}
+}
+
+void _inc_func_call_count(
+        const char * const function_name, const char* file, const int line) {
+
+    void *result;
+    const char* symbols[] = {function_name};
+    const int rc = get_func_call_event(&global_function_call_count_map_head,
+    		function_name, &result);
+
+    FunctionCallEvent* check;
+
+    //Symbol don't exist, so create it and initialize it to 0.
+    if (!rc) {
+    	check = (FunctionCallEvent*) malloc(sizeof(FunctionCallEvent));
+        check->func_call_count = 0;
+        set_source_location(&check->location, file, line);
+
+    	add_symbol_value(&global_function_call_count_map_head, symbols, 1, check, 1);
+    }
+    else {
+    	check = (FunctionCallEvent*)result;
+    }
+
+    check->func_call_count++;
+}
+
+int _get_func_call_count(const char * const function_name)
+{
+    void *result;
+    const int rc = get_func_call_event(&global_function_call_count_map_head,
+    		function_name, &result);
+
+    if (rc) {
+        FunctionCallEvent * const check = (FunctionCallEvent*)result;
+
+        return check->func_call_count;
+    }
+
+    return -1L;
+}
+
+static int get_func_call_event(
+        ListNode * const head, const char * const function_name, void **output) {
+
+    ListNode *target_node;
+    assert_non_null(head);
+    assert_non_null(function_name);
+    assert_non_null(output);
+
+    if (list_find(head, function_name, symbol_names_match, &target_node)) {
+        SymbolMapValue *map_value;
+        ListNode *child_list;
+        int return_value = 0;
+        assert_non_null(target_node);
+        assert_non_null(target_node->value);
+
+        map_value = (SymbolMapValue*)target_node->value;
+        child_list = &map_value->symbol_values_list_head;
+
+		ListNode *value_node = NULL;
+		return_value = list_first(child_list, &value_node);
+		assert_true(return_value);
+		*output = (void*) value_node->value;
+		return_value = value_node->refcount;
+
+        return return_value;
+    }
+    return 0;
+}
+
+void _reset_func_call_count(const char * const function_name)
+{
+    void *result;
+    const int rc = get_func_call_event(&global_function_call_count_map_head,
+    		function_name, &result);
+
+    if (rc) {
+        FunctionCallEvent * const check = (FunctionCallEvent*)result;
+        check->func_call_count = 0;
+    }
+}
 
 void _check_expected(
         const char * const function_name, const char * const parameter_name,
@@ -1754,6 +1865,11 @@ int _run_test(
         /* If this is a setup function then ignore any allocated blocks
          * only ensure they're deallocated on tear down. */
         if (function_type != UNIT_TEST_FUNCTION_TYPE_SETUP) {
+        	/* Malloc done to keep track of the function call count, shall not
+        	 * influence the block allocated verification. Free the entire
+        	 * function call count list */
+            list_free(&global_function_call_count_map_head, free_symbol_map_value,
+                      (void*)0);
             fail_if_blocks_allocated(check_point, function_name);
         }
 
