@@ -157,7 +157,6 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
         #function, #parameter, __FILE__, __LINE__, value_array, \
         sizeof(value_array) / sizeof((value_array)[0]), count)
 
-
 /* Add an event to check a parameter, using check_expected(), against a
  * signed range.  Where range is minimum <= value <= maximum.
  * See will_return() for a description of the count parameter.
@@ -178,6 +177,21 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
                                   count) \
     _expect_not_in_range(#function, #parameter, __FILE__, __LINE__, \
                          minimum, maximum, count)
+
+/* Add an event to check whether a parameter, using check_expected(),
+ * is or isn't in a string.  See will_return() for a description of the count
+ * parameter.
+ */
+#define expect_in_string(function, parameter, string) \
+    expect_in_string_count(function, parameter, string, 1)
+#define expect_in_string_count(function, parameter, string, count) \
+    _expect_in_string(#function, #parameter, __FILE__, __LINE__, string, \
+                      count)
+#define expect_not_in_string(function, parameter, string) \
+    expect_not_in_string_count(function, parameter, string, 1)
+#define expect_not_in_string_count(function, parameter, string, count) \
+    _expect_not_in_string(#function, #parameter, __FILE__, __LINE__, string, \
+                      count)
 
 /* Add an event to check whether a parameter, using check_expected(), is or
  * isn't a value.  See will_return() for a description of the count parameter.
@@ -222,7 +236,6 @@ cast_to_largest_integral_type(cast_to_pointer_integral_type(value))
 #define expect_not_memory_count(function, parameter, memory, size, count) \
     _expect_not_memory(#function, #parameter, __FILE__, __LINE__, \
                        (const void*)(memory), size, count)
-
 
 /* Add an event to allow any value for a parameter checked using
  * check_expected().  See will_return() for a description of the count
@@ -314,6 +327,13 @@ __FILE__, __LINE__)
 // Assert that the specified value is not within a set.
 #define assert_not_in_set(value, values, number_of_values) \
     _assert_not_in_set(value, values, number_of_values, __FILE__, __LINE__)
+
+// Assert that the specified value is within a string.
+#define assert_in_string(value, string) \
+    _assert_in_string(value, string, __FILE__, __LINE__)
+// Assert that the specified value is not within a string.
+#define assert_not_in_string(value, string) \
+    _assert_not_in_set(value, string, __FILE__, __LINE__)
 
 
 // Forces the test to fail immediately and quit.
@@ -475,6 +495,15 @@ void _expect_not_in_range(
     const uintmax_t minimum,
     const uintmax_t maximum, const int count);
 
+void _expect_in_string(
+    const char* const function, const char* const parameter,
+    const char* const file, const int line, const char* string,
+    const int count);
+void _expect_not_in_string(
+    const char* const function, const char* const parameter,
+    const char* const file, const int line, const char* string,
+    const int count);
+
 void _expect_value(
     const char* const function, const char* const parameter,
     const char* const file, const int line, const uintmax_t value,
@@ -544,6 +573,12 @@ void _assert_in_set(
 void _assert_not_in_set(
     const uintmax_t value, const uintmax_t values[],
     const size_t number_of_values, const char* const file, const int line);
+void _assert_in_string(
+    const char* const haystack, const char* const needle,
+    const char* const file, const int line);
+void _assert_not_in_string(
+    const char* const haystack, const char* const needle,
+    const char* const file, const int line);
 
 void _fail(const char * const file, const int line);
 
